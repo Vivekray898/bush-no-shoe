@@ -1,0 +1,6 @@
+node_modules/
+remotion-tmp/
+out/
+stills/
+*.log
+.DS_Store
