@@ -3,1039 +3,1069 @@
     {
       "word": "A",
       "start": 0.0,
-      "end": 0.52
+      "end": 0.12
     },
     {
       "word": "journalist",
-      "start": 0.52,
-      "end": 0.9
+      "start": 0.12,
+      "end": 0.48
     },
     {
       "word": "threw",
-      "start": 0.9,
-      "end": 1.28
+      "start": 0.48,
+      "end": 0.84
     },
     {
       "word": "a",
-      "start": 1.28,
-      "end": 1.5
+      "start": 0.84,
+      "end": 0.98
     },
     {
       "word": "shoe",
-      "start": 1.5,
-      "end": 1.66
+      "start": 0.98,
+      "end": 1.16
     },
     {
       "word": "at",
-      "start": 1.66,
+      "start": 1.16,
+      "end": 1.3
+    },
+    {
+      "word": "the",
+      "start": 1.3,
+      "end": 1.4
+    },
+    {
+      "word": "President",
+      "start": 1.4,
+      "end": 1.7
+    },
+    {
+      "word": "of",
+      "start": 1.7,
       "end": 1.9
     },
     {
       "word": "the",
       "start": 1.9,
-      "end": 2.0
-    },
-    {
-      "word": "President",
-      "start": 2.0,
-      "end": 2.32
-    },
-    {
-      "word": "of",
-      "start": 2.32,
-      "end": 2.54
-    },
-    {
-      "word": "the",
-      "start": 2.54,
-      "end": 2.64
+      "end": 2.02
     },
     {
       "word": "United",
-      "start": 2.64,
-      "end": 2.84
+      "start": 2.02,
+      "end": 2.2
     },
     {
       "word": "States.",
-      "start": 2.84,
-      "end": 3.36
+      "start": 2.2,
+      "end": 2.7
     },
     {
       "word": "And",
-      "start": 3.56,
-      "end": 3.88
+      "start": 3.08,
+      "end": 3.42
     },
     {
       "word": "he",
-      "start": 3.88,
-      "end": 3.98
+      "start": 3.42,
+      "end": 3.54
     },
     {
       "word": "missed.",
-      "start": 3.98,
-      "end": 4.24
+      "start": 3.54,
+      "end": 3.86
     },
     {
       "word": "Twice.",
-      "start": 4.24,
-      "end": 4.68
+      "start": 4.3,
+      "end": 4.58
     },
     {
       "word": "December",
-      "start": 5.74,
-      "end": 6.34
+      "start": 5.34,
+      "end": 5.56
     },
     {
       "word": "14,",
-      "start": 6.34,
-      "end": 6.86
+      "start": 5.56,
+      "end": 6.1
     },
     {
       "word": "2008.",
-      "start": 7.26,
-      "end": 7.72
+      "start": 6.36,
+      "end": 6.98
     },
     {
       "word": "Baghdad,",
-      "start": 8.3,
-      "end": 8.8
+      "start": 7.7,
+      "end": 8.2
     },
     {
       "word": "Iraq.",
-      "start": 9.12,
-      "end": 9.3
+      "start": 8.5,
+      "end": 8.7
     },
     {
       "word": "President",
-      "start": 9.78,
-      "end": 10.1
+      "start": 9.56,
+      "end": 9.94
     },
     {
       "word": "George",
-      "start": 10.1,
-      "end": 10.42
+      "start": 9.94,
+      "end": 10.22
     },
     {
       "word": "W.",
-      "start": 10.42,
-      "end": 10.78
+      "start": 10.22,
+      "end": 10.56
     },
     {
       "word": "Bush",
-      "start": 11.0,
-      "end": 11.04
+      "start": 10.84,
+      "end": 10.9
     },
     {
       "word": "is",
-      "start": 11.04,
-      "end": 11.36
+      "start": 10.9,
+      "end": 11.24
     },
     {
       "word": "at",
-      "start": 11.36,
-      "end": 11.48
+      "start": 11.24,
+      "end": 11.38
     },
     {
       "word": "his",
-      "start": 11.48,
-      "end": 11.6
+      "start": 11.38,
+      "end": 11.56
     },
     {
       "word": "last",
-      "start": 11.6,
+      "start": 11.56,
       "end": 11.88
     },
     {
       "word": "press",
       "start": 11.88,
-      "end": 12.16
+      "end": 12.12
     },
     {
       "word": "conference",
-      "start": 12.16,
-      "end": 12.58
+      "start": 12.12,
+      "end": 12.56
     },
     {
       "word": "there,",
-      "start": 12.58,
-      "end": 12.92
+      "start": 12.56,
+      "end": 12.82
     },
     {
       "word": "standing",
-      "start": 13.32,
-      "end": 13.56
+      "start": 13.28,
+      "end": 13.66
     },
     {
       "word": "next",
-      "start": 13.56,
-      "end": 13.86
+      "start": 13.66,
+      "end": 13.92
     },
     {
       "word": "to",
-      "start": 13.86,
-      "end": 14.04
+      "start": 13.92,
+      "end": 14.08
     },
     {
       "word": "Iraq's",
-      "start": 14.04,
+      "start": 14.08,
       "end": 14.5
     },
     {
       "word": "Prime",
       "start": 14.5,
-      "end": 14.68
+      "end": 14.66
     },
     {
       "word": "Minister,",
-      "start": 14.68,
-      "end": 15.14
+      "start": 14.66,
+      "end": 15.08
     },
     {
       "word": "Nouri",
-      "start": 15.54,
-      "end": 15.91
+      "start": 15.62,
+      "end": 15.92
     },
     {
       "word": "al-Maliki.",
-      "start": 15.91,
-      "end": 16.28
+      "start": 15.92,
+      "end": 16.32
     },
     {
       "word": "A",
-      "start": 17.18,
-      "end": 17.72
+      "start": 17.0,
+      "end": 17.16
     },
     {
       "word": "journalist",
-      "start": 17.72,
-      "end": 18.02
+      "start": 17.16,
+      "end": 17.5
     },
     {
       "word": "in",
-      "start": 18.02,
-      "end": 18.28
+      "start": 17.5,
+      "end": 17.76
     },
     {
       "word": "the",
-      "start": 18.28,
-      "end": 18.36
+      "start": 17.76,
+      "end": 17.86
     },
     {
       "word": "front",
-      "start": 18.36,
-      "end": 18.58
+      "start": 17.86,
+      "end": 18.06
     },
     {
       "word": "row,",
-      "start": 18.58,
-      "end": 18.82
+      "start": 18.06,
+      "end": 18.32
     },
     {
       "word": "Muntadhar",
-      "start": 19.2,
-      "end": 19.6
+      "start": 18.84,
+      "end": 19.34
     },
     {
       "word": "al-Zaidi,",
-      "start": 19.6,
-      "end": 20.0
+      "start": 19.34,
+      "end": 19.84
     },
     {
       "word": "stands",
-      "start": 20.24,
-      "end": 20.44
+      "start": 19.96,
+      "end": 20.18
     },
     {
       "word": "up.",
-      "start": 20.44,
-      "end": 20.74
+      "start": 20.18,
+      "end": 20.44
     },
     {
       "word": "He",
-      "start": 21.08,
-      "end": 21.18
+      "start": 20.92,
+      "end": 21.06
     },
     {
       "word": "shouts,",
-      "start": 21.18,
-      "end": 21.48
+      "start": 21.06,
+      "end": 21.3
     },
     {
       "word": "\"This",
-      "start": 21.8,
-      "end": 21.9
+      "start": 21.54,
+      "end": 21.64
     },
     {
       "word": "is",
-      "start": 21.9,
-      "end": 22.06
+      "start": 21.64,
+      "end": 21.82
     },
     {
       "word": "a",
-      "start": 22.06,
-      "end": 22.22
+      "start": 21.82,
+      "end": 21.94
     },
     {
       "word": "farewell",
-      "start": 22.22,
-      "end": 22.56
+      "start": 21.94,
+      "end": 22.34
     },
     {
       "word": "kiss",
-      "start": 22.56,
-      "end": 22.9
+      "start": 22.34,
+      "end": 22.7
     },
     {
       "word": "from",
-      "start": 22.9,
-      "end": 23.12
+      "start": 22.7,
+      "end": 22.9
     },
     {
       "word": "the",
-      "start": 23.12,
-      "end": 23.22
+      "start": 22.9,
+      "end": 23.02
     },
     {
       "word": "Iraqi",
-      "start": 23.22,
-      "end": 23.54
+      "start": 23.02,
+      "end": 23.34
     },
     {
       "word": "people,",
-      "start": 23.54,
-      "end": 23.9
+      "start": 23.34,
+      "end": 23.7
     },
     {
       "word": "you",
-      "start": 23.9,
-      "end": 24.1
+      "start": 23.84,
+      "end": 23.88
     },
     {
       "word": "dog!\"",
-      "start": 24.1,
-      "end": 24.34
+      "start": 23.88,
+      "end": 24.18
     },
     {
       "word": "And",
-      "start": 24.76,
+      "start": 24.68,
       "end": 24.9
     },
     {
       "word": "he",
       "start": 24.9,
-      "end": 25.0
+      "end": 24.98
     },
     {
       "word": "throws",
-      "start": 25.0,
-      "end": 25.24
+      "start": 24.98,
+      "end": 25.22
     },
     {
       "word": "his",
-      "start": 25.24,
+      "start": 25.22,
       "end": 25.46
     },
     {
       "word": "shoe.",
       "start": 25.46,
-      "end": 25.7
+      "end": 25.68
     },
     {
       "word": "Bush",
-      "start": 26.04,
-      "end": 26.22
-    },
-    {
-      "word": "ducks.",
-      "start": 26.22,
+      "start": 26.16,
       "end": 26.56
     },
     {
+      "word": "ducks.",
+      "start": 26.56,
+      "end": 26.88
+    },
+    {
       "word": "Al-Zaidi",
-      "start": 27.66,
-      "end": 28.26
+      "start": 27.38,
+      "end": 27.76
     },
     {
       "word": "throws",
-      "start": 28.26,
-      "end": 28.6
+      "start": 27.76,
+      "end": 28.02
     },
     {
       "word": "his",
-      "start": 28.6,
-      "end": 28.84
+      "start": 28.02,
+      "end": 28.2
     },
     {
       "word": "other",
-      "start": 28.84,
-      "end": 29.02
+      "start": 28.2,
+      "end": 28.36
     },
     {
       "word": "shoe.",
-      "start": 29.02,
-      "end": 29.34
+      "start": 28.36,
+      "end": 28.6
     },
     {
       "word": "\"This",
-      "start": 29.34,
-      "end": 29.88
+      "start": 28.6,
+      "end": 29.28
     },
     {
       "word": "is",
-      "start": 29.88,
-      "end": 30.06
+      "start": 29.28,
+      "end": 29.46
     },
     {
       "word": "for",
-      "start": 30.06,
-      "end": 30.24
+      "start": 29.46,
+      "end": 29.66
     },
     {
       "word": "the",
-      "start": 30.24,
-      "end": 30.34
+      "start": 29.66,
+      "end": 29.78
     },
     {
       "word": "widows",
-      "start": 30.34,
-      "end": 30.66
+      "start": 29.78,
+      "end": 30.16
     },
     {
       "word": "and",
-      "start": 30.66,
-      "end": 30.86
+      "start": 30.16,
+      "end": 30.28
     },
     {
       "word": "orphans!\"",
-      "start": 30.86,
-      "end": 31.38
+      "start": 30.28,
+      "end": 30.7
     },
     {
       "word": "Bush",
-      "start": 31.78,
-      "end": 31.88
+      "start": 31.26,
+      "end": 31.56
     },
     {
       "word": "ducks",
-      "start": 31.88,
-      "end": 32.16
+      "start": 31.56,
+      "end": 31.84
     },
     {
       "word": "again.",
-      "start": 32.16,
-      "end": 32.48
+      "start": 31.84,
+      "end": 32.22
     },
     {
       "word": "The",
       "start": 32.9,
-      "end": 33.0
+      "end": 33.02
     },
     {
       "word": "second",
-      "start": 33.0,
-      "end": 33.3
+      "start": 33.02,
+      "end": 33.38
     },
     {
       "word": "shoe",
-      "start": 33.3,
-      "end": 33.6
+      "start": 33.38,
+      "end": 33.72
     },
     {
       "word": "flies",
-      "start": 33.6,
-      "end": 33.94
+      "start": 33.72,
+      "end": 34.04
     },
     {
       "word": "past",
-      "start": 33.94,
-      "end": 34.22
+      "start": 34.04,
+      "end": 34.44
     },
     {
       "word": "him",
-      "start": 34.22,
-      "end": 34.5
+      "start": 34.44,
+      "end": 34.78
     },
     {
       "word": "and",
-      "start": 34.5,
-      "end": 34.88
+      "start": 34.78,
+      "end": 35.24
     },
     {
       "word": "hits",
-      "start": 34.88,
-      "end": 35.08
+      "start": 35.24,
+      "end": 35.46
     },
     {
       "word": "the",
-      "start": 35.08,
-      "end": 35.28
-    },
-    {
-      "word": "American",
-      "start": 35.28,
+      "start": 35.46,
       "end": 35.66
     },
     {
-      "word": "flag",
+      "word": "American",
       "start": 35.66,
-      "end": 36.04
+      "end": 35.98
+    },
+    {
+      "word": "flag",
+      "start": 35.98,
+      "end": 36.34
     },
     {
       "word": "behind",
-      "start": 36.04,
-      "end": 36.4
+      "start": 36.34,
+      "end": 36.68
     },
     {
       "word": "him.",
-      "start": 36.4,
-      "end": 36.7
+      "start": 36.68,
+      "end": 36.96
     },
     {
       "word": "Luckily,",
-      "start": 37.74,
-      "end": 38.26
+      "start": 37.5,
+      "end": 37.98
     },
     {
       "word": "Bush",
-      "start": 38.42,
-      "end": 38.66
+      "start": 38.08,
+      "end": 38.36
     },
     {
       "word": "had",
-      "start": 38.66,
-      "end": 38.82
+      "start": 38.36,
+      "end": 38.58
     },
     {
       "word": "fast",
-      "start": 38.82,
-      "end": 39.08
+      "start": 38.58,
+      "end": 38.9
     },
     {
       "word": "reflexes.",
-      "start": 39.08,
-      "end": 39.8
+      "start": 38.9,
+      "end": 39.68
     },
     {
       "word": "Unluckily",
-      "start": 40.12,
-      "end": 40.6
+      "start": 40.1,
+      "end": 40.66
     },
     {
       "word": "for",
-      "start": 40.6,
-      "end": 40.74
-    },
-    {
-      "word": "the",
-      "start": 40.74,
+      "start": 40.66,
       "end": 40.84
     },
     {
-      "word": "shoe,",
+      "word": "the",
       "start": 40.84,
-      "end": 41.1
+      "end": 40.96
+    },
+    {
+      "word": "shoe,",
+      "start": 40.96,
+      "end": 41.34
     },
     {
       "word": "it",
-      "start": 41.4,
-      "end": 41.46
+      "start": 41.74,
+      "end": 41.9
     },
     {
       "word": "only",
-      "start": 41.46,
-      "end": 41.68
+      "start": 41.9,
+      "end": 42.1
     },
     {
       "word": "hit",
-      "start": 41.68,
-      "end": 41.88
+      "start": 42.1,
+      "end": 42.3
     },
     {
       "word": "a",
-      "start": 41.88,
-      "end": 41.98
+      "start": 42.3,
+      "end": 42.4
     },
     {
       "word": "flag.",
-      "start": 41.98,
-      "end": 42.2
+      "start": 42.4,
+      "end": 42.64
     },
     {
       "word": "A",
-      "start": 43.58,
-      "end": 43.74
+      "start": 43.3,
+      "end": 43.42
     },
     {
       "word": "thrown",
-      "start": 43.74,
-      "end": 44.0
+      "start": 43.42,
+      "end": 43.74
     },
     {
       "word": "shoe",
-      "start": 44.0,
-      "end": 44.3
+      "start": 43.74,
+      "end": 44.16
     },
     {
       "word": "flies",
-      "start": 44.3,
-      "end": 44.64
+      "start": 44.16,
+      "end": 44.52
     },
     {
       "word": "in",
-      "start": 44.64,
-      "end": 44.86
+      "start": 44.52,
+      "end": 44.72
     },
     {
       "word": "a",
-      "start": 44.86,
-      "end": 44.96
+      "start": 44.72,
+      "end": 44.84
     },
     {
       "word": "straight",
-      "start": 44.96,
-      "end": 45.2
+      "start": 44.84,
+      "end": 45.04
     },
     {
       "word": "line,",
-      "start": 45.2,
-      "end": 45.6
+      "start": 45.04,
+      "end": 45.52
     },
     {
       "word": "like",
-      "start": 45.82,
-      "end": 45.98
+      "start": 45.84,
+      "end": 46.12
     },
     {
       "word": "a",
-      "start": 45.98,
-      "end": 46.1
+      "start": 46.12,
+      "end": 46.28
     },
     {
       "word": "ball",
-      "start": 46.1,
-      "end": 46.36
+      "start": 46.28,
+      "end": 46.48
     },
     {
       "word": "in",
-      "start": 46.36,
-      "end": 46.56
+      "start": 46.48,
+      "end": 46.62
     },
     {
       "word": "dodgeball.",
-      "start": 46.56,
-      "end": 47.06
+      "start": 46.62,
+      "end": 47.18
     },
     {
       "word": "If",
-      "start": 47.4,
-      "end": 47.56
+      "start": 47.8,
+      "end": 47.98
     },
     {
       "word": "you",
-      "start": 47.56,
-      "end": 47.66
+      "start": 47.98,
+      "end": 48.08
     },
     {
       "word": "drop",
-      "start": 47.66,
-      "end": 47.86
+      "start": 48.08,
+      "end": 48.28
     },
     {
       "word": "down",
-      "start": 47.86,
-      "end": 48.16
+      "start": 48.28,
+      "end": 48.54
     },
     {
       "word": "fast",
-      "start": 48.16,
-      "end": 48.44
+      "start": 48.54,
+      "end": 48.88
     },
     {
       "word": "enough,",
-      "start": 48.44,
-      "end": 48.74
+      "start": 48.88,
+      "end": 49.26
     },
     {
       "word": "it",
-      "start": 49.06,
-      "end": 49.18
+      "start": 49.42,
+      "end": 49.52
     },
     {
       "word": "just",
-      "start": 49.18,
-      "end": 49.34
+      "start": 49.52,
+      "end": 49.74
     },
     {
       "word": "sails",
-      "start": 49.34,
-      "end": 49.68
+      "start": 49.74,
+      "end": 50.04
     },
     {
       "word": "over",
-      "start": 49.68,
-      "end": 49.94
+      "start": 50.04,
+      "end": 50.28
     },
     {
       "word": "your",
-      "start": 49.94,
-      "end": 50.12
+      "start": 50.28,
+      "end": 50.44
     },
     {
       "word": "head.",
-      "start": 50.12,
-      "end": 50.34
+      "start": 50.44,
+      "end": 50.72
     },
     {
       "word": "Al-Zaidi",
-      "start": 51.58,
-      "end": 52.02
+      "start": 51.54,
+      "end": 52.06
     },
     {
       "word": "was",
-      "start": 52.02,
-      "end": 52.28
+      "start": 52.06,
+      "end": 52.18
     },
     {
       "word": "grabbed",
-      "start": 52.28,
-      "end": 52.58
+      "start": 52.18,
+      "end": 52.42
     },
     {
       "word": "by",
-      "start": 52.58,
-      "end": 52.82
+      "start": 52.42,
+      "end": 52.6
     },
     {
       "word": "guards",
-      "start": 52.82,
-      "end": 53.16
+      "start": 52.6,
+      "end": 52.9
     },
     {
       "word": "and",
-      "start": 53.16,
-      "end": 53.34
+      "start": 52.9,
+      "end": 53.08
     },
     {
       "word": "taken",
-      "start": 53.34,
-      "end": 53.54
+      "start": 53.08,
+      "end": 53.3
     },
     {
       "word": "away.",
-      "start": 53.54,
-      "end": 53.82
+      "start": 53.3,
+      "end": 53.58
     },
     {
       "word": "He",
-      "start": 54.22,
-      "end": 54.32
+      "start": 54.14,
+      "end": 54.28
     },
     {
       "word": "was",
-      "start": 54.32,
-      "end": 54.44
+      "start": 54.28,
+      "end": 54.46
     },
     {
       "word": "jailed",
-      "start": 54.44,
-      "end": 54.88
+      "start": 54.46,
+      "end": 54.84
     },
     {
       "word": "for",
-      "start": 54.88,
-      "end": 54.98
+      "start": 54.84,
+      "end": 54.94
     },
     {
       "word": "nine",
-      "start": 54.98,
-      "end": 55.2
+      "start": 54.94,
+      "end": 55.18
     },
     {
       "word": "months.",
-      "start": 55.2,
-      "end": 55.5
+      "start": 55.18,
+      "end": 55.44
     },
     {
       "word": "The",
-      "start": 55.88,
-      "end": 55.96
+      "start": 56.06,
+      "end": 56.18
     },
     {
       "word": "shoes",
-      "start": 55.96,
-      "end": 56.2
+      "start": 56.18,
+      "end": 56.38
     },
     {
       "word": "were",
-      "start": 56.2,
-      "end": 56.42
+      "start": 56.38,
+      "end": 56.6
     },
     {
       "word": "destroyed.",
-      "start": 56.42,
-      "end": 56.76
+      "start": 56.6,
+      "end": 56.94
     },
     {
       "word": "Bush",
-      "start": 57.92,
-      "end": 58.36
+      "start": 56.94,
+      "end": 57.66
     },
     {
       "word": "just",
-      "start": 58.36,
-      "end": 58.64
+      "start": 57.66,
+      "end": 57.96
     },
     {
       "word": "joked",
-      "start": 58.64,
-      "end": 58.96
+      "start": 57.96,
+      "end": 58.3
     },
     {
       "word": "about",
-      "start": 58.96,
-      "end": 59.18
+      "start": 58.3,
+      "end": 58.54
     },
     {
       "word": "it.",
-      "start": 59.18,
-      "end": 59.38
+      "start": 58.54,
+      "end": 58.72
     },
     {
       "word": "\"If",
-      "start": 59.7,
-      "end": 59.82
+      "start": 59.48,
+      "end": 59.72
     },
     {
       "word": "you",
-      "start": 59.82,
-      "end": 59.92
+      "start": 59.72,
+      "end": 59.82
     },
     {
       "word": "want",
-      "start": 59.92,
-      "end": 60.08
+      "start": 59.82,
+      "end": 60.02
     },
     {
       "word": "the",
-      "start": 60.08,
-      "end": 60.22
+      "start": 60.02,
+      "end": 60.18
     },
     {
       "word": "facts,\"",
-      "start": 60.22,
-      "end": 60.54
+      "start": 60.18,
+      "end": 60.48
     },
     {
       "word": "he",
-      "start": 60.76,
-      "end": 60.88
+      "start": 60.66,
+      "end": 60.82
     },
     {
       "word": "said,",
-      "start": 60.88,
-      "end": 61.12
+      "start": 60.82,
+      "end": 61.08
     },
     {
       "word": "\"it's",
-      "start": 61.44,
-      "end": 61.64
-    },
-    {
-      "word": "a",
-      "start": 61.64,
+      "start": 61.58,
       "end": 61.74
     },
     {
-      "word": "size",
+      "word": "a",
       "start": 61.74,
-      "end": 61.98
+      "end": 61.8
+    },
+    {
+      "word": "size",
+      "start": 61.8,
+      "end": 62.12
     },
     {
       "word": "10",
-      "start": 61.98,
-      "end": 62.26
+      "start": 62.12,
+      "end": 62.48
     },
     {
       "word": "shoe.\"",
-      "start": 62.26,
-      "end": 62.52
+      "start": 62.48,
+      "end": 62.8
     },
     {
       "word": "And",
-      "start": 62.9,
-      "end": 63.06
+      "start": 63.46,
+      "end": 63.64
     },
     {
       "word": "the",
-      "start": 63.06,
-      "end": 63.16
+      "start": 63.64,
+      "end": 63.76
     },
     {
       "word": "man",
-      "start": 63.16,
-      "end": 63.38
+      "start": 63.76,
+      "end": 63.96
     },
     {
       "word": "who",
-      "start": 63.38,
-      "end": 63.52
+      "start": 63.96,
+      "end": 64.08
     },
     {
       "word": "made",
-      "start": 63.52,
-      "end": 63.68
+      "start": 64.08,
+      "end": 64.26
     },
     {
       "word": "that",
-      "start": 63.68,
-      "end": 63.9
+      "start": 64.26,
+      "end": 64.46
     },
     {
       "word": "shoe?",
-      "start": 63.9,
-      "end": 64.22
+      "start": 64.46,
+      "end": 64.88
     },
     {
       "word": "He",
-      "start": 64.5,
-      "end": 64.62
+      "start": 65.44,
+      "end": 65.62
     },
     {
       "word": "suddenly",
-      "start": 64.62,
-      "end": 64.94
+      "start": 65.62,
+      "end": 65.94
     },
     {
       "word": "got",
-      "start": 64.94,
-      "end": 65.16
+      "start": 65.94,
+      "end": 66.18
     },
     {
       "word": "orders",
-      "start": 65.16,
-      "end": 65.54
+      "start": 66.18,
+      "end": 66.52
     },
     {
       "word": "from",
-      "start": 65.54,
-      "end": 65.76
+      "start": 66.52,
+      "end": 66.7
     },
     {
       "word": "all",
-      "start": 65.76,
-      "end": 66.0
+      "start": 66.7,
+      "end": 66.88
     },
     {
       "word": "over",
-      "start": 66.0,
-      "end": 66.22
+      "start": 66.88,
+      "end": 67.04
     },
     {
       "word": "the",
-      "start": 66.22,
-      "end": 66.32
+      "start": 67.04,
+      "end": 67.14
     },
     {
       "word": "world.",
-      "start": 66.32,
-      "end": 66.58
+      "start": 67.14,
+      "end": 67.38
     }
   ],
-  "duration_s": 67.1,
+  "duration_s": 67.802,
   "segments": [
     {
       "start": 0.0,
-      "end": 4.68,
-      "text": "A journalist threw a shoe at the President of the United States, and he missed twice."
+      "end": 2.7,
+      "text": "A journalist threw a shoe at the President of the United States."
     },
     {
-      "start": 5.74,
-      "end": 12.58,
-      "text": "December 14, 2008, Baghdad, Iraq, President George W. Bush is at his last press conference"
+      "start": 3.08,
+      "end": 3.86,
+      "text": "And he missed."
     },
     {
-      "start": 12.58,
-      "end": 16.28,
-      "text": "there, standing next to Iraq's Prime Minister, Neri Al-Maliki."
+      "start": 4.3,
+      "end": 4.58,
+      "text": "Twice."
     },
     {
-      "start": 17.18,
-      "end": 20.74,
-      "text": "A journalist in the front row, Mantadhar Alzady, stands up."
+      "start": 5.34,
+      "end": 6.98,
+      "text": "December 14, 2008."
     },
     {
-      "start": 21.08,
-      "end": 25.24,
-      "text": "He shouts, this is a farewell kiss from the Iraqi people you dog, and he throws"
+      "start": 7.7,
+      "end": 8.7,
+      "text": "Baghdad, Iraq."
     },
     {
-      "start": 25.24,
-      "end": 26.56,
-      "text": "his shoe, Bush tux."
+      "start": 9.56,
+      "end": 14.5,
+      "text": "President George W. Bush is at his last press conference there, standing next to Iraq's"
     },
     {
-      "start": 27.66,
-      "end": 29.34,
-      "text": "Alzady throws his other shoe."
+      "start": 14.5,
+      "end": 16.32,
+      "text": "Prime Minister, Nouriel Maliki."
     },
     {
-      "start": 29.34,
-      "end": 32.48,
-      "text": "This is for the widows and orphans, Bush tucks again."
+      "start": 17.0,
+      "end": 20.44,
+      "text": "A journalist in the front row, Muntadar Al-Zadeh, stands up."
+    },
+    {
+      "start": 20.92,
+      "end": 24.18,
+      "text": "He shouts, this is a farewell kiss from the Iraqi people, you dog."
+    },
+    {
+      "start": 24.68,
+      "end": 25.68,
+      "text": "And he throws his shoe."
+    },
+    {
+      "start": 26.16,
+      "end": 26.88,
+      "text": "Bush ducks."
+    },
+    {
+      "start": 27.38,
+      "end": 28.6,
+      "text": "Al-Zadeh throws his other shoe."
+    },
+    {
+      "start": 28.6,
+      "end": 30.7,
+      "text": "This is for the widows and orphans."
+    },
+    {
+      "start": 31.26,
+      "end": 32.22,
+      "text": "Bush ducks again."
     },
     {
       "start": 32.9,
-      "end": 36.7,
+      "end": 36.96,
       "text": "The second shoe flies past him and hits the American flag behind him."
     },
     {
-      "start": 37.74,
-      "end": 39.8,
+      "start": 37.5,
+      "end": 39.68,
       "text": "Luckily, Bush had fast reflexes."
     },
     {
-      "start": 40.12,
-      "end": 42.2,
+      "start": 40.1,
+      "end": 42.64,
       "text": "Unluckily for the shoe, it only hit a flag."
     },
     {
-      "start": 43.58,
-      "end": 47.06,
+      "start": 43.3,
+      "end": 47.18,
       "text": "A thrown shoe flies in a straight line, like a ball in dodgeball."
     },
     {
-      "start": 47.4,
-      "end": 50.34,
+      "start": 47.8,
+      "end": 50.72,
       "text": "If you drop down fast enough, it just sails over your head."
     },
     {
-      "start": 51.58,
-      "end": 53.82,
-      "text": "Alzady was grabbed by guards and taken away."
+      "start": 51.54,
+      "end": 53.58,
+      "text": "Al-Zadeh was grabbed by guards and taken away."
     },
     {
-      "start": 54.22,
-      "end": 55.5,
+      "start": 54.14,
+      "end": 55.44,
       "text": "He was jailed for nine months."
     },
     {
-      "start": 55.88,
-      "end": 56.76,
+      "start": 56.06,
+      "end": 56.94,
       "text": "The shoes were destroyed."
     },
     {
-      "start": 57.92,
-      "end": 59.38,
+      "start": 56.94,
+      "end": 58.72,
       "text": "Bush just joked about it."
     },
     {
-      "start": 59.7,
-      "end": 62.52,
-      "text": "If you want the facts, he said, it's a size 10 shoe."
+      "start": 59.48,
+      "end": 62.8,
+      "text": "If you want the fact, he said, it's a size 10 shoe."
     },
     {
-      "start": 62.9,
-      "end": 66.58,
+      "start": 63.46,
+      "end": 67.38,
       "text": "And the man who made that shoe, he suddenly got orders from all over the world."
     }
   ]

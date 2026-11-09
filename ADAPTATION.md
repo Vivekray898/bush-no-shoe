@@ -6,24 +6,24 @@ scene to an indoor press-conference room. Scope: only
 constant). `voice/`, `audio/`, `out/`, `qa/`, `SCRIPT.md` and `~/workspace/custom-skills/`
 were not touched. No full video render yet — that is the next step after this look-check.
 
-## Timing (verified from `voice/words.json`, 2026-11-09)
-Voice 67.10 s, 188 words; **TOTAL = 2013 frames @ 30 fps**.
-Key beats: "Twice." f127–140 (flash right after, FLASH_AT=140); al-Zaidi "stands" f607;
-throw 1 "throws" f750; "Bush ducks" f781; throw 2 "throws" f848; "Bush ducks again" f953;
-shoe hits flag ~f1070 ("flag" 35.66 s); "Luckily," f1132; "Unluckily" f1204; "dodgeball"
-f1397; "jailed for nine months" f1633; "size 10 shoe" f1852.
+## Timing (verified from `voice-elevenlabs/words.json`, 2026-11-09 — re-timed from the Kokoro voice, see RETIME.md)
+Voice 67.802 s, 188 words; **TOTAL = 2034 frames @ 30 fps**.
+Key beats: "Twice." f129–137 (flash right after, FLASH_AT=137); al-Zaidi "stands" f599;
+throw 1 "throws" f749; "Bush ducks" f797; throw 2 "throws" f833; "Bush ducks again" f947;
+shoe hits flag ~f1079 ("flag" 35.98 s); "Luckily," f1125; "Unluckily" f1203; "dodgeball"
+f1399; "jailed for nine months" f1634; "size 10 shoe" f1854.
 
 ## What changed per file
 
 ### `story.ts` (full rewrite)
-- TOTAL = 2013. 9 shots, all "day" light, crowd "press": 1 hook f0–156; 2 setting
-  f156–501; 3 throw 1 f501–814 (stand f607, throw f750, duck f781); 4 throw 2 f814–1117
-  (duck f953, flag hit f1070); 5 deadpan f1117–1287 (Luckily f1132, Unluckily f1204);
-  6 explanation f1287–1529; 7 consequence f1529–1721; 8 callback f1721–1905 (size-10
-  f1852); 9 final wide f1905–2013. XFADE = {} (hard cuts only); FLASH_AT = 140.
+- TOTAL = 2034. 9 shots, all "day" light, crowd "press": 1 hook f0–149; 2 setting
+  f149–500; 3 throw 1 f500–814 (stand f599, throw f749, duck f797); 4 throw 2 f814–1117
+  (duck f947, flag hit f1079); 5 deadpan f1117–1289 (Luckily f1125, Unluckily f1203);
+  6 explanation f1289–1534; 7 consequence f1534–1708; 8 callback f1708–1907 (size-10
+  f1854); 9 final wide f1907–2034. XFADE = {} (hard cuts only); FLASH_AT = 137.
 - Kept helpers: glide, pushK, dolly, zoom, rolled, run, mix, full, camAt, kickAt,
   keyEnd, shotAt, layersAt, dofAt, focusAt. KICKS (seconds, gain): [25.0, 0.6],
-  [26.04, 0.7], [28.26, 0.6], [31.78, 0.7], [35.66, 0.9].
+  [26.56, 0.7], [27.76, 0.6], [31.56, 0.7], [35.98, 0.9].
 - Room constants: PODIUM [0,0,-4.2]; BUSH_AT [0,0,-4.9]; MALIKI_AT [1.05,0,-4.9];
   ZAIDI_AT [1.2,0,0.2]; FLAG_US [-1.7,0,-5.3]; FLAG_IQ [1.7,0,-5.3]; GUARD_L/R
   [±2.4,0,-3.4]; ROWS_Z [0.2,1.8,3.4,5.0]; COLS_X [-3.6,-2.4,-1.2,0,1.2,2.4,3.6];
@@ -89,7 +89,7 @@ f1397; "jailed for nine months" f1633; "size 10 shoe" f1852.
 toon.ts, ink.ts, lensblur.ts, grade.ts, shade.ts, lights.ts (day preset), cardshade.ts,
 paint.ts, BushShoeShort.tsx (post chain ink → lens pre → lens main → bloom → NEUTRAL
 tone map → grade, MSAA 4, grain OFF), src/index.ts, src/Root.tsx
-(BUSH_SHOE_FRAMES = TOTAL auto-updates to 2013).
+(BUSH_SHOE_FRAMES = TOTAL auto-updates to 2034).
 
 ## What was simplified / dropped and why
 - **Whole town/bridge/river/park/swing geometry deleted** — the scene is one indoor

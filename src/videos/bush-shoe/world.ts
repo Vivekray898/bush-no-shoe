@@ -62,7 +62,10 @@ export class World {
       g.translate(flip ? -0.75 : 0.75, 0, 0); // pole edge at the origin
       const m = new THREE.Mesh(g, lam(flip ? "flagIQ" : "flagUS", () => ({ map: tex, side: THREE.DoubleSide })));
       m.position.set(poleX, 2.2, poleZ);
-      m.castShadow = true; m.frustumCulled = false;
+      // FIX1 (9 Nov 2026): flag cloths cast NO shadow. Their shadows fell on the curtain/back wall as
+      // huge flat purple rectangles (the two-tone shade colour is violet) that dominated the podium
+      // shots. The thin gold poles still cast their own fine shadow; the cloths read fine without one.
+      m.castShadow = false; m.frustumCulled = false;
       R.add(m);
       return { mesh: m, base: (g.attributes.position.array as Float32Array).slice() };
     };

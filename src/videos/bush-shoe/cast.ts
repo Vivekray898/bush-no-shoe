@@ -247,7 +247,7 @@ export type Stage = { places: Place[]; fx: FxPlace[] };
 const bush = (cam: CamInfo, f: number, t: number, id: number, out: Stage) => {
   const dip = Math.max(duckDip(f, DUCK1_F), duckDip(f, DUCK2_F), id === 6 ? duckDip(f, REPLAY_DUCK_F) : 0);
   const ducking = dip > 0.02;
-  const expr: Expr = ducking ? "shock" : id === 5 || id >= 8 ? "grin" : id === 4 && f > 1000 ? "relief" : "neutral";
+  const expr: Expr = ducking ? "shock" : id === 5 || id >= 8 ? "grin" : id === 4 && f > 994 ? "relief" : "neutral";
   const fo: FrontOpts = { mode: "stand", expr, blink: lidAt(t, 1), tilt: (dip / 0.35) * 0.12 };
   out.places.push(person(cam, { i: 1, o: BUSH, okey: "bush" }, BUSH_AT[0], BUSH_AT[1] - dip, BUSH_AT[2],
     { side: false, mirror: false }, fo, {}, 0.88));
@@ -263,23 +263,23 @@ const maliki = (cam: CamInfo, t: number, f: number, out: Stage) => {
   blob(out, MALIKI_AT[0], 0, MALIKI_AT[2], 0.88);
 };
 
-/** al-Zaidi, front row: sits until f607, stands up over ~12 f, shouts, throws both shoes, then is led out. */
+/** al-Zaidi, front row: sits until f599, stands up over ~12 f, shouts, throws both shoes, then is led out. */
 const zaidi = (cam: CamInfo, f: number, t: number, id: number, out: Stage) => {
   if (id >= 8) return; // led away: his front-row chair sits empty in the callback + final wide
   const [zx, zy, zz] = ZAIDI_AT;
-  // escort out (shot 7): walks with the guards toward the back of the room from f1650, gone by f1704.
+  // escort out (shot 7): walks with the guards toward the back of the room from f1651, gone by f1709.
   // He starts from his stepped-forward spot (1.2, 0.75), not the chair.
-  if (f >= 1650) {
-    const u = smooth((f - 1650) / 53);
+  if (f >= 1651) {
+    const u = smooth((f - 1651) / 57);
     const x = zx + (2.8 - zx) * u, z = 0.75 + (5.6 - 0.75) * u;
-    const phase = q(((f - 1650) / 30) % 1, 120);
+    const phase = q(((f - 1651) / 30) % 1, 120);
     out.places.push(person(cam, { i: 3, o: ZAIDI, okey: "zaidi" }, x, zy, z,
       viewOf(cam, x, z, 0.4, 1), { mode: "stroll", phase, expr: "nervous", blink: lidAt(t, 3) },
       { mode: "march", phase, expr: "nervous", stride: 0.8 }));
     blob(out, x, 0, z, 0.8);
     return;
   }
-  if (f < 607) {
+  if (f < 599) {
     out.places.push(person(cam, { i: 3, o: ZAIDI, okey: "zaidi" }, zx, zy, zz,
       { side: false, mirror: false }, { mode: "sit", expr: "neutral", blink: lidAt(t, 3) }, {}, 0.8));
     blob(out, zx, 0, zz, 0.8);
@@ -289,9 +289,9 @@ const zaidi = (cam: CamInfo, f: number, t: number, id: number, out: Stage) => {
   // he steps FORWARD out of his chair as he stands (z 0.2 -> 0.75): standing in the chair's footprint read as
   // standing ON the chair in the r3 consequence stills.
   const zx2 = zx, zz2 = zz + 0.55 * u;
-  const shouting = f >= 685 && f < 735;
-  const throwing = (f >= 745 && f < 762) || (f >= 843 && f < 860);
-  const expr: Expr = shouting ? "shock" : throwing ? "grin" : f >= 1100 ? "nervous" : "neutral";
+  const shouting = f >= 677 && f < 728;
+  const throwing = (f >= 744 && f < 761) || (f >= 828 && f < 845);
+  const expr: Expr = shouting ? "shock" : throwing ? "grin" : f >= 1109 ? "nervous" : "neutral";
   const fo: FrontOpts = {
     mode: "stand", expr, blink: lidAt(t, 3),
     wave: throwing ? 1 : undefined, // right arm up on the throws
@@ -307,14 +307,22 @@ const press = (cam: CamInfo, f: number, t: number, out: Stage) => {
   let i = 10;
   for (const z of ROWS_Z) for (const x of COLS_X) {
     if (z === ROWS_Z[0] && x === ZAIDI_AT[0]) { i++; continue; } // al-Zaidi's chair: drawn separately
-    // a press member closer than ~2.3 m to the lens becomes a huge cut-off blob at the frame edge
-    // (the r1 shot-3 stills caught this): leave that seat empty for this frame.
-    if (cam.pos.distanceTo(tmp.set(x, 1.2, z)) < 2.3) { i++; continue; }
+    // FIX2: the nearest row (z = 5.0, closest to the wide cameras) leaves only its centre three members
+    // (|x| < 2.0); their chairs stay, empty, instead of half a head at the frame edge.
+    // Honest note: a fresh re-render of f600 with this rule in place was byte-identical to the r1 still,
+    // so the outer nearest-row members were already out of frame / near-culled in these shots — the
+    // blurred heads that remain at the bottom corners are foreground depth framing (near members at
+    // z 3.4, recognised heads, heavily DOF-blurred), not half-cut standing figures. Kept as a guard.
+    if (z === ROWS_Z[ROWS_Z.length - 1] && Math.abs(x) >= 2.0) { i++; continue; }
+    // FIX1: a press member closer than ~2.8 m to the lens becomes a huge cut-off blob / half a person
+    // at the frame edge (r1 shot-3, and the half-cut foreground heads in the user's rendered video):
+    // leave that seat empty for this frame instead of drawing half a person. Was 2.3 m.
+    if (cam.pos.distanceTo(tmp.set(x, 1.2, z)) < 2.8) { i++; continue; }
     const o = pressOutfit(i);
     const frontRow = z === ROWS_Z[0];
-    const look = f >= 605 ? (x < ZAIDI_AT[0] ? 1 : x > ZAIDI_AT[0] ? -1 : 0) : 0;
-    const gasp = (f >= 748 && f < 800) || (f >= 846 && f < 905);
-    const expr: Expr = gasp ? (frontRow ? "shock" : "nervous") : f >= 1721 && i % 5 === 0 ? "grin" : "neutral";
+    const look = f >= 597 ? (x < ZAIDI_AT[0] ? 1 : x > ZAIDI_AT[0] ? -1 : 0) : 0;
+    const gasp = (f >= 747 && f < 816) || (f >= 831 && f < 890);
+    const expr: Expr = gasp ? (frontRow ? "shock" : "nervous") : f >= 1708 && i % 5 === 0 ? "grin" : "neutral";
     out.places.push(person(cam, { i, o, okey: `press${i % 8}` }, x, 0, z,
       { side: false, mirror: false }, { mode: "sit", expr, look, blink: lidAt(t, i) }, {}, 0.8));
     blob(out, x, 0, z, 0.8, 0.8);
@@ -334,16 +342,16 @@ const guards = (cam: CamInfo, f: number, t: number, id: number, out: Stage) => {
   spots.forEach(([home, flank], gi) => {
     const i = 50 + gi;
     let x = home[0], z = home[2], mode: "stand" | "stroll" = "stand", phase = 0;
-    if (f >= 1550 && f < 1620) {
-      const u = smooth((f - 1550) / 70);
+    if (f >= 1547 && f < 1617) {
+      const u = smooth((f - 1547) / 70);
       x = home[0] + (flank[0] - home[0]) * u; z = home[2] + (flank[2] - home[2]) * u;
-      mode = "stroll"; phase = q(((f - 1550) / 30) % 1, 120);
-    } else if (f >= 1620 && f < 1650) { x = flank[0]; z = flank[2]; }
-    else if (f >= 1650) {
-      const u = smooth((f - 1650) / 53);
+      mode = "stroll"; phase = q(((f - 1547) / 30) % 1, 120);
+    } else if (f >= 1617 && f < 1651) { x = flank[0]; z = flank[2]; }
+    else if (f >= 1651) {
+      const u = smooth((f - 1651) / 57);
       x = flank[0] + (2.8 + (gi ? 0.7 : -0.7) - flank[0]) * u;
       z = flank[2] + (5.6 - flank[2]) * u;
-      mode = "stroll"; phase = q(((f - 1650) / 30) % 1, 120);
+      mode = "stroll"; phase = q(((f - 1651) / 30) % 1, 120);
     }
     const view = viewOf(cam, x, z, 0.4, 1);
     out.places.push(person(cam, { i, o: GUARD, okey: "guard" }, x, 0, z, view,
@@ -360,12 +368,12 @@ const shoes = (f: number, id: number, out: Stage) => {
   if (s2) shoeFx(out, s2);
   if (sr) shoeFx(out, sr);
   // shoe 1 rests on the floor by the podium from just after throw 1 (the callback ends on it)
-  if (f >= 790 && id !== 6) {
+  if (f >= 806 && id !== 6) {
     out.fx.push({ key: "shoeRest", cw: 300, ch: 200, draw: drawShoe, x: SHOE_REST[0], y: SHOE_REST[1] + 0.05, z: SHOE_REST[2], w: 0.5, h: 0.33, rot: -0.35 });
   }
   // impact burst where shoe 2 hits the flag
-  if (f >= 1070 && f < 1070 + 14) {
-    const u = (f - 1070) / 14;
+  if (f >= 1079 && f < 1079 + 14) {
+    const u = (f - 1079) / 14;
     out.fx.push({ key: `burst${q(u, 30)}`, cw: 500, ch: 500, draw: (p) => fxBurst(p, q(u, 30)), x: -1.7, y: 2.2, z: -5.2, w: 0.9, h: 0.9 });
   }
 };

@@ -4,15 +4,15 @@ Source: ~/workspace/bush-shoe-short/SCRIPT.md (approved, do not change facts/wor
 Style: claude-animated-shorts — 1080x1920, 30 fps, day light indoors (warm palace room, NOT golden hour), 2D bean-head cards, ink outlines, gliding cameras, no captions/labels, English only.
 TOTAL placeholder: 2025 f (67.5 s) in scaffold — replace with real duration from voice.wav once known (expected ~1800 f / ~60 s).
 
-REAL timings from voice/words.json (67.10 s, 188 words, TOTAL = 2013 f @ 30 fps). Every visual reaction 0-3 frames BEFORE its word:
-- P1 HOOK f0-140 (0.00-4.68 s): "A journalist threw a shoe at the President of the United States. And he missed. Twice." ("Twice." 4.24-4.68 s)
-- P2 SETTING f172-488 (5.74-16.28 s): "December 14, 2008. Baghdad, Iraq. President George W. Bush is at his last press conference there, standing next to Iraq's Prime Minister, Nouri al-Maliki."
-- P3 THROW 1 f515-797 (17.18-26.56 s): al-Zaidi stands, shouts "This is a farewell kiss from the Iraqi people, you dog!", throws shoe 1 ("throws his shoe" 25.00-25.70 s), "Bush ducks" 26.04-26.56 s.
-- P4 THROW 2 f830-1101 (27.66-36.70 s): "Al-Zaidi throws his other shoe" 28.26-29.34 s; "Bush ducks again" 31.78-32.48 s; second shoe hits the American flag behind him (by ~36.70 s).
-- P5 DEADPAN f1132-1266 (37.74-42.20 s): "Luckily," 37.74-38.26 s; "Unluckily" 40.12-40.60 s; "it only hit a flag."
-- P6 EXPLANATION f1307-1510 (43.58-50.34 s): dodgeball analogy ("dodgeball" 46.56-47.06 s).
-- P7 CONSEQUENCE f1547-1703 (51.58-56.76 s): grabbed, "jailed for nine months" 54.44-55.50 s, shoes destroyed.
-- P8 CALLBACK f1738-1997 (57.92-66.58 s): "size 10 shoe" 61.74-62.52 s; shoemaker orders; tail to f2013.
+REAL timings from voice-elevenlabs/words.json (67.802 s, 188 words, TOTAL = 2034 f @ 30 fps). Re-timed 9 Nov 2026 from the Kokoro voice (67.10 s / 2013 f); see RETIME.md. Every visual reaction 0-3 frames BEFORE its word:
+- P1 HOOK f0-137 (0.00-4.58 s): "A journalist threw a shoe at the President of the United States. And he missed. Twice." ("Twice." 4.30-4.58 s)
+- P2 SETTING f160-490 (5.34-16.32 s): "December 14, 2008. Baghdad, Iraq. President George W. Bush is at his last press conference there, standing next to Iraq's Prime Minister, Nouri al-Maliki."
+- P3 THROW 1 f510-806 (17.00-26.88 s): al-Zaidi stands, shouts "This is a farewell kiss from the Iraqi people, you dog!", throws shoe 1 ("throws his shoe" 24.98-25.68 s), "Bush ducks" 26.16-26.88 s.
+- P4 THROW 2 f821-1109 (27.38-36.96 s): "Al-Zaidi throws his other shoe" 27.76-28.60 s; "Bush ducks again" 31.26-32.22 s; second shoe hits the American flag behind him (by ~36.96 s).
+- P5 DEADPAN f1125-1279 (37.50-42.64 s): "Luckily," 37.50-37.98 s; "Unluckily" 40.10-40.66 s; "it only hit a flag."
+- P6 EXPLANATION f1299-1522 (43.30-50.72 s): dodgeball analogy ("dodgeball" 46.62-47.18 s).
+- P7 CONSEQUENCE f1546-1708 (51.54-56.94 s): grabbed, "jailed for nine months" 54.46-55.44 s, shoes destroyed.
+- P8 CALLBACK f1708-2021 (56.94-67.38 s): "size 10 shoe" 61.80-62.80 s; shoemaker orders; tail to f2034.
 
 ## Shots (press-conference room — podium centre-back, US flag left + Iraq flag right behind Bush, al-Maliki at Bush's side, rows of seated press facing podium, al-Zaidi front row)
 1. Hook wide: whole room, podium + flags + press rows, slow push-in. White flash after "Twice."

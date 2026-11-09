@@ -271,7 +271,9 @@ export const iraqFlagTex = () => ctex("flagIQ", 390, 200, (g) => {
 
 // ---------------- the press room ----------------
 export const ROWS_Z = [0.2, 1.8, 3.4, 5.0];
-export const COLS_X = [-3.6, -2.4, -1.2, 0, 1.2, 2.4, 3.6];
+// FIX1 (9 Nov 2026): outer columns pulled in from +-3.6 to +-3.0 — the outer press members were
+// half-cut at the frame edges of the wide shots. 1.2 is kept so al-Zaidi's chair stays at x = 1.2.
+export const COLS_X = [-3.0, -2.0, -1.2, 0, 1.2, 2.0, 3.0];
 export const FLAG_POLES: [number, number][] = [[-1.7, -5.3], [1.7, -5.3]]; // [x, z] of the two flag poles
 
 /** Build the room into `root`: floor + carpet, back + side walls (8 m tall so no lens ever sees over them),
@@ -295,6 +297,13 @@ export const buildRoom = (root: THREE.Object3D) => {
   // floor (z -6 .. 12, x -8 .. 8) + red carpet runner down the centre aisle
   b.add(boxGeo(V(-8, -0.1, -6), V(8, 0, 12), 0, true), floorM);
   b.add(boxGeo(V(-1.6, 0, -3.8), V(1.6, 0.03, 6.5)), carpetM);
+  // FIX1: floor plank seams (thin darker strips) + carpet detail — gold border stripes along the
+  // runner edges and gold cross-bands every ~2 m, so the floor/carpet no longer read as flat colour.
+  const seamM = lam("floorSeam", () => ({ color: "#a87a4e" }));
+  const goldTrimM = lam("goldTrim", () => ({ color: "#c9a24e" }));
+  for (const z of [-4, -2, 0, 2, 4, 6, 8, 10]) b.add(boxGeo(V(-8, 0.001, z - 0.02), V(8, 0.008, z + 0.02)), seamM);
+  for (const x of [-1.62, 1.54]) b.add(boxGeo(V(x, 0.03, -3.8), V(x + 0.08, 0.045, 6.5)), goldTrimM);
+  for (const z of [-2, 0, 2, 4, 6]) b.add(boxGeo(V(-1.6, 0.03, z - 0.04), V(1.6, 0.045, z + 0.04)), goldTrimM);
   // back wall (z = -6) + side walls (x = +-8), 8 m tall; wainscot strip along the back wall
   b.add(boxGeo(V(-8, 0, -6.3), V(8, 8, -6)), wallM);
   b.add(boxGeo(V(-8.3, 0, -6), V(-8, 8, 12)), wallSideM);
@@ -305,10 +314,85 @@ export const buildRoom = (root: THREE.Object3D) => {
   b.add(boxGeo(V(-3.6, 3.2, -5.96), V(3.6, 3.55, -5.86)), lam("curtainDark", () => ({ color: "#6b211d" })));
   // wall panels flanking the curtain (thin proud boxes, so the back wall is not one flat slab)
   for (const x of [-5.6, 5.6]) b.add(boxGeo(V(x - 1.1, 1.4, -5.97), V(x + 1.1, 4.6, -5.9)), lam("panel", () => ({ color: "#dfcda4" })));
+  // FIX1 — fill the empty cream band at the top of the wide shots (the top ~1/3 of wides was blank wall).
+  // All shapes are abstract (no text, no letters anywhere):
+  //  - cornice band across the whole back wall (y 6.4-6.9) + dentil blocks under it (y 6.1-6.4);
+  //  - pelmet band above the curtain (y 3.5-4.1) + a gold medallion disc at its centre (y 4.6);
+  //  - four framed abstract portraits (gold frame, coloured inner panel, sun disc, hill triangles)
+  //    at y 4.6-5.9, above the curtain's outer edges and above the lower side panels.
+  b.add(boxGeo(V(-8, 6.4, -5.98), V(8, 6.9, -5.88)), lam("cornice", () => ({ color: "#c9a86a" })));
+  for (let x = -7.6; x <= 7.6; x += 0.8) b.add(boxGeo(V(x, 6.1, -5.97), V(x + 0.4, 6.4, -5.9)), lam("dentil", () => ({ color: "#b8985a" })));
+  b.add(boxGeo(V(-3.6, 3.5, -5.96), V(3.6, 4.1, -5.86)), lam("pelmet", () => ({ color: "#6b211d" })));
+  b.add(boxGeo(V(-3.6, 4.02, -5.95), V(3.6, 4.1, -5.87)), goldTrimM);
+  const medal = new THREE.SphereGeometry(0.35, 16, 12);
+  b.add(medal, goldTrimM, new THREE.Matrix4().makeScale(1, 1, 0.25).setPosition(0, 4.7, -5.9));
+  const medalInner = new THREE.SphereGeometry(0.22, 16, 12);
+  b.add(medalInner, lam("medalRed", () => ({ color: "#7e2a26" })), new THREE.Matrix4().makeScale(1, 1, 0.25).setPosition(0, 4.7, -5.86));
+  const portraitCols = ["#5a7ba6", "#5d7a3a", "#b5653f", "#7b6a8c"];
+  [-6.3, -4.5, 4.5, 6.3].forEach((x, pi) => {
+    // gold frame (slightly larger box behind) + coloured inner panel
+    b.add(boxGeo(V(x - 0.55, 4.6, -5.97), V(x + 0.55, 5.9, -5.92)), goldTrimM);
+    b.add(boxGeo(V(x - 0.45, 4.7, -5.96), V(x + 0.45, 5.8, -5.9)), lam(`portrait${pi}`, () => ({ color: portraitCols[pi] })));
+    // sun disc + two hill triangles, proud of the panel (abstract landscape, no text)
+    const sun = new THREE.SphereGeometry(0.11, 10, 8);
+    b.add(sun, lam("portraitSun", () => ({ color: "#f2d98c" })), new THREE.Matrix4().makeScale(1, 1, 0.3).setPosition(x + 0.22, 5.55, -5.88));
+    b.add(tri(V(x - 0.45, 4.7, -5.88), V(x - 0.05, 4.7, -5.88), V(x - 0.25, 5.15, -5.88)), lam("portraitHill", () => ({ color: "#3f5a34" })));
+    b.add(tri(V(x - 0.1, 4.7, -5.88), V(x + 0.45, 4.7, -5.88), V(x + 0.2, 5.05, -5.88)), lam("portraitHill2", () => ({ color: "#2f4630" })));
+  });
+  // FIX1: wall sconces — gold bracket + warm glow box — flanking the curtain at y 4.4, and on the side walls.
+  const glowM = lam("sconceGlow", () => ({ color: "#ffe6b0" }));
+  for (const x of [-4.4, 4.4]) {
+    b.add(boxGeo(V(x - 0.06, 4.15, -5.97), V(x + 0.06, 4.4, -5.9)), goldTrimM);
+    b.add(boxGeo(V(x - 0.14, 4.4, -5.96), V(x + 0.14, 4.75, -5.88)), glowM);
+  }
+  // FIX1: side-wall pilasters + sconces, so the 3/4 shots (S3, S6) also get wall detail, not flat cream.
+  // FIX2b: pilasters darkened to cornice gold (#c9a86a) — at #dfcda4 they were invisible against the #ddcba6
+  // side walls (the r2 f1600 still showed only a faint seam line where a pilaster should be).
+  for (const sx of [-1, 1]) for (const z of [-2, 2, 6]) {
+    const px = sx * 8;
+    b.add(boxGeo(V(Math.min(px, px - sx * 0.3), 0, z - 0.35), V(Math.max(px, px - sx * 0.3), 6.0, z + 0.35)), lam("pilaster", () => ({ color: "#c9a86a" })));
+    b.add(boxGeo(V(Math.min(px, px - sx * 0.12), 4.3, z - 0.14), V(Math.max(px, px - sx * 0.12), 4.65, z + 0.14)), glowM);
+  }
+  // FIX2b: gold-framed dark-wood panels on the side walls, y 1.6-3.4, at z -2, 2, 6. The r2 f1600
+  // consequence still showed a big blank cream side wall — because the S7 camera looks slightly down, the
+  // top of frame at the far wall only reaches y ~3.8, so the high portraits (y 4.6-5.9) never appear in
+  // that shot. The detail has to live low, where the camera actually looks.
+  for (const sx of [-1, 1]) for (const z of [-2, 2, 6]) {
+    const px = sx * 8;
+    b.add(boxGeo(V(Math.min(px, px - sx * 0.12), 1.6, z - 0.38), V(Math.max(px, px - sx * 0.12), 3.4, z + 0.38)), goldTrimM);
+    b.add(boxGeo(V(sx < 0 ? Math.min(px, px - sx * 0.12) : Math.min(px, px - sx * 0.12) - sx * 0.02, 1.75, z - 0.28), V(sx < 0 ? Math.max(px, px - sx * 0.12) + 0.02 : Math.max(px, px - sx * 0.12), 3.25, z + 0.28)), lam("sidePanelIn", () => ({ color: "#6b4a2f" })));
+  }
+  // FIX2: framed abstract portraits on the side walls too (y 4.6-5.9, at z -2, 2, 6). The r1 f1600
+  // consequence still showed a big blank cream SIDE wall above the group — the back-wall decor never
+  // appears in that shot, which looks across the room. Boxes only here (no triangles: the faces point
+  // sideways, so the portrait plane is the x = +-8 wall). No text anywhere.
+  const sideCols = ["#5a7ba6", "#5d7a3a", "#b5653f"];
+  for (const sx of [-1, 1]) for (let zi = 0; zi < 3; zi++) {
+    const z = [-2, 2, 6][zi], px = sx * 8, col = sideCols[zi];
+    const x0 = Math.min(px, px - sx * 0.1), x1 = Math.max(px, px - sx * 0.1);
+    b.add(boxGeo(V(x0, 4.6, z - 0.55), V(x1, 5.9, z + 0.55)), goldTrimM); // frame
+    b.add(boxGeo(V(sx < 0 ? x0 : x0 - sx * 0.02, 4.7, z - 0.45), V(sx < 0 ? x1 + 0.02 : x1, 5.8, z + 0.45)), lam(`sidePortrait${sx}${zi}`, () => ({ color: col })));
+    const sun = new THREE.SphereGeometry(0.11, 10, 8);
+    b.add(sun, lam("portraitSun", () => ({ color: "#f2d98c" })), new THREE.Matrix4().makeScale(0.3, 1, 1).setPosition(px - sx * 0.12, 5.55, z + 0.22));
+    b.add(boxGeo(V(sx < 0 ? x0 : x0 - sx * 0.02, 4.7, z - 0.4), V(sx < 0 ? x1 + 0.02 : x1, 5.05, z - 0.05)), lam("portraitHill", () => ({ color: "#3f5a34" })));
+  }
   // podium: body + top slab, front face toward the press (+z). 1.0 m tall (not 1.15): Bush's head + shoulders
   // must read over it from the setting / deadpan cameras, which sit only a few metres away.
   b.add(boxGeo(V(-0.8, 0, -4.6), V(0.8, 1.0, -3.9)), podiumM);
   b.add(boxGeo(V(-0.9, 1.0, -4.7), V(0.9, 1.08, -3.8)), podiumTopM);
+  // FIX1: podium front detail — a darker front panel with a gold-trimmed border and a plain gold disc
+  // (no emblem, no text), so the podium front is not one flat brown slab in the MS/CU shots.
+  b.add(boxGeo(V(-0.6, 0.15, -3.9), V(0.6, 0.85, -3.86)), lam("podiumPanel", () => ({ color: "#5a3d28" })));
+  for (const [x0, x1] of [[-0.62, 0.62]] as const) {
+    b.add(boxGeo(V(x0, 0.13, -3.9), V(x1, 0.17, -3.85)), goldTrimM);
+    b.add(boxGeo(V(x0, 0.83, -3.9), V(x1, 0.87, -3.85)), goldTrimM);
+  }
+  for (const [y0, y1] of [[0.15, 0.85]] as const) {
+    b.add(boxGeo(V(-0.62, y0, -3.9), V(-0.58, y1, -3.85)), goldTrimM);
+    b.add(boxGeo(V(0.58, y0, -3.9), V(0.62, y1, -3.85)), goldTrimM);
+  }
+  const podDisc = new THREE.SphereGeometry(0.16, 14, 10);
+  b.add(podDisc, goldTrimM, new THREE.Matrix4().makeScale(1, 1, 0.3).setPosition(0, 0.5, -3.85));
   // two microphones on the podium top: thin stems + small head boxes, angled toward Bush.
   // Wider apart (±0.45) and shorter than the first passes: at ±0.25 / ±0.38 their heads sat at Bush's ear level
   // and read as black earmuffs flanking his face in the close-ups. Now they sit below chin level.
@@ -317,6 +401,8 @@ export const buildRoom = (root: THREE.Object3D) => {
     b.add(boxGeo(V(-0.02, 0, -0.02), V(0.02, 0.26, 0.02)), micM, m);
     const hm = new THREE.Matrix4().makeRotationZ(tilt).setPosition(x + tilt * 0.26, 1.08 + 0.26, -4.15);
     b.add(boxGeo(V(-0.035, 0, -0.035), V(0.035, 0.06, 0.035)), micM, hm);
+    // FIX1: small round mic base discs, so the stems no longer float on the podium top.
+    b.add(boxGeo(V(x - 0.07, 1.08, -4.22), V(x + 0.07, 1.1, -4.08)), micM);
   }
   // flag poles: gold, 2.7 m, with a finial ball; cloths are added by world.ts
   for (const [x, z] of FLAG_POLES) {
@@ -325,9 +411,14 @@ export const buildRoom = (root: THREE.Object3D) => {
     b.add(ball, goldM, new THREE.Matrix4().makeTranslation(x, 2.76, z));
   }
   // chairs: 4 rows x 7, seat + back + 4 legs each (seat top 0.45 m)
+  // FIX1: seat cushion (lighter red) + dark top rail on each chair back, so the rows read as
+  // furniture with parts instead of flat red slabs in the front-row shots.
+  const cushionM = lam("chairCushion", () => ({ color: "#8a3d34" }));
   for (const z of ROWS_Z) for (const x of COLS_X) {
     b.add(boxGeo(V(x - 0.24, 0.42, z - 0.2), V(x + 0.24, 0.47, z + 0.2)), chairM); // seat
+    b.add(boxGeo(V(x - 0.22, 0.47, z - 0.18), V(x + 0.22, 0.5, z + 0.18)), cushionM); // cushion
     b.add(boxGeo(V(x - 0.24, 0.47, z - 0.24), V(x + 0.24, 0.95, z - 0.18)), chairM); // back
+    b.add(boxGeo(V(x - 0.26, 0.9, z - 0.26), V(x + 0.26, 0.96, z - 0.16)), chairLegM); // top rail
     for (const [dx, dz] of [[-0.2, -0.16], [0.2, -0.16], [-0.2, 0.16], [0.2, 0.16]] as const)
       b.add(boxGeo(V(x + dx - 0.025, 0, z + dz - 0.025), V(x + dx + 0.025, 0.42, z + dz + 0.025)), chairLegM);
   }
