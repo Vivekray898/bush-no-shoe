@@ -25,7 +25,9 @@ const lin = (pts: [number, number][], x: number) => {
 // Iraq flag on the viewer's right (+x), both behind the podium.
 export const PODIUM: V3 = [0, 0, -4.2];
 export const BUSH_AT: V3 = [0, 0, -4.9];
-export const MALIKI_AT: V3 = [1.05, 0, -4.9];
+// FIX2: Maliki moved 1.05 -> 1.35 — at 1.05 the podium's right corner (x 0.9) cut him in half in the
+// podium MS (screenshot 2: left half hidden behind the podium edge). At 1.35 he clears the corner.
+export const MALIKI_AT: V3 = [1.35, 0, -4.9];
 export const ZAIDI_AT: V3 = [1.2, 0, 0.2];
 export const FLAG_US: V3 = [-1.7, 0, -5.3];
 export const FLAG_IQ: V3 = [1.7, 0, -5.3];
@@ -37,7 +39,8 @@ export const GUARD_R: V3 = [2.0, 0, -3.4];
 export const ROWS_Z = [0.2, 1.8, 3.4, 5.0];
 export const COLS_X = [-3.0, -2.0, -1.2, 0, 1.2, 2.0, 3.0];
 // Bush's head height (eyes) and the podium top, for DOF focus points
-export const BUSH_EYES: V3 = [0, 1.55, -4.9];
+// FIX2: eyes 1.55 -> 1.45 — Bush's figure is 1.68 m at scale 1.0 (was 1.48 m at 0.88), eyes at ~1.44 m.
+export const BUSH_EYES: V3 = [0, 1.45, -4.9];
 export const SHOE_REST: V3 = [0.3, 0.1, -3.6]; // shoe 1 lying on the floor after throw 1
 
 // ---------------- word-timed beats (from words.json; frames @ 30 fps) ----------------
@@ -158,13 +161,23 @@ const zoom = (pos: V3, look: V3, fov: number, k: number, rest: Partial<Cam> = {}
 // shot 1 (hook wide): high wide from behind the press rows, slow push-in. FIX1: pulled back 0.4 m and
 // look raised to y 1.2 — the outer press members were half-cut at the edges, and the upper wall (now
 // decorated with cornice/portraits/sconces) is worth showing instead of cropping it out.
-const S1a = (f: number) => dolly([0, 3.1, 10.2], [0, 1.2, -3.5], pushK(f, 0, 0.0025), { fov: 46 });
-const S1b = (f: number) => dolly([0, 2.9, 9.0], [0, 1.2, -3.8], pushK(f, 52, 0.002), { fov: 46 });
+// FIX2 round 2: push rates halved (0.0025/0.002 -> 0.0012/0.001). The fast push carried the camera from
+// z 10.2 to ~z 5.8 by the end of the shot, so the near rows ended up under/behind the lens and the far
+// rows' outer columns drifted to the frame edges, where the edge cull removed them — the wides came out
+// nearly empty (r1_70 / r1_2033). A slow push keeps the crowd in frame.
+const S1a = (f: number) => dolly([0, 3.1, 10.2], [0, 1.2, -3.5], pushK(f, 0, 0.0012), { fov: 46 });
+const S1b = (f: number) => dolly([0, 2.9, 9.0], [0, 1.2, -3.8], pushK(f, 52, 0.001), { fov: 46 });
 // shot 2 (setting): podium MS — Bush + al-Maliki at the microphones, flags behind.
-// Higher, further back, narrower lens than the first pass: from low and close the podium filled the frame and
-// Bush was only a head peeking over it. From here his head + shoulders read over the 1.0 m podium.
-const S2a = (f: number) => dolly([0.6, 2.5, 2.8], [0.4, 1.45, -4.9], pushK(f, 149, 0.002), { fov: 30 });
-const S2b = (f: number) => dolly([0.4, 2.4, 1.8], [0.4, 1.5, -4.9], pushK(f, 315, 0.0018), { fov: 28 });
+// FIX2: pulled right back and widened (was z 2.8/1.8, fov 30/28): at fov 30 the visible half-width at the
+// flags was only ~1.2 m, so BOTH flags were half-cut at the frame edges (screenshot 2) and Bush was a small
+// head over a huge podium. Now z 4.0/3.4, fov 48: half-width ~2.2 m at the flags (they span +-1.7 m),
+// centred on x 0, and with Bush at scale 1.0 his head AND shoulders read over the 1.0 m podium.
+// FIX2 round 2: fov 46 -> 48 and push rates slowed (0.002/0.0018 -> 0.0015/0.001) — at f300 the first
+// version's push had already carried the camera to z ~1.7, where the half-width at the flags is only
+// ~1.67 m, so the US pole was just-cut at the left edge again (r1_300). The slower push keeps the poles
+// in frame through the whole shot.
+const S2a = (f: number) => dolly([0.2, 2.5, 4.0], [0, 1.45, -4.9], pushK(f, 149, 0.0015), { fov: 48 });
+const S2b = (f: number) => dolly([0.2, 2.4, 3.4], [0, 1.5, -4.9], pushK(f, 315, 0.001), { fov: 48 });
 // shot 3 (throw 1): 3/4 from the right, high over the press rows, al-Zaidi + podium both in frame; cut closer
 // for the throw. The cut is a ZOOM, not a dolly: dollying in from the side pushed al-Zaidi (close to the lens,
 // far off the look axis) to the frame edge in the r4/r5 stills. A zoom keeps his screen position and just
@@ -195,11 +208,16 @@ const S6b = (f: number) => dolly([2.6, 1.8, 2.2], [0, 1.4, -4.7], pushK(f, 1401,
 const S7a = (f: number) => dolly([-3.2, 1.9, 3.6], [1.2, 0.85, 0.6], pushK(f, 1534, 0.002), { fov: 40 });
 const S7b = (f: number) => dolly([-2.4, 1.9, 4.2], [1.8, 0.85, 2.0], pushK(f, 1641, 0.002), { fov: 40 });
 // shot 8 (callback): podium again, Bush joking; cut to the shoe CU on "size 10"
-const S8a = (f: number) => dolly([0.5, 2.2, 1.2], [0, 1.45, -4.9], pushK(f, 1708, 0.0025), { fov: 32 });
+// FIX2: was z 1.2, fov 32 — at fov 32 the half-width at the flags is ~1.05 m against flags at +-1.7 m,
+// so the flags were cut and Maliki (now at x 1.35) half-cut, same maths as shot 2. Now z 3.6, fov 48
+// (half-width ~2.0 m), centred on x 0, matching shot 2's framing.
+// FIX2 round 2: fov 44 -> 48, push rate 0.0025 -> 0.0015 — same pole-cut reason as shot 2 (r1_300).
+const S8a = (f: number) => dolly([0.2, 2.3, 3.6], [0, 1.45, -4.9], pushK(f, 1708, 0.0015), { fov: 48 });
 const S8b = (f: number) => dolly([1.6, 1.6, 0.8], [0.2, 0.35, -3.8], pushK(f, 1854, 0.002), { fov: 38 });
 // shot 9 (final wide): the whole room, flag still wobbling slightly
 // FIX1: pulled back 0.4 m, look raised to y 1.2 (same as shot 1).
-const S9a = (f: number) => dolly([0, 3.1, 9.6], [0, 1.2, -3.5], pushK(f, 1907, 0.002), { fov: 46 });
+// FIX2 round 2: push rate 0.002 -> 0.001 — same empty-wide reason as shot 1 (r1_2033).
+const S9a = (f: number) => dolly([0, 3.1, 9.6], [0, 1.2, -3.5], pushK(f, 1907, 0.001), { fov: 46 });
 
 const CAMS: Record<number, Key[]> = {
   1: [

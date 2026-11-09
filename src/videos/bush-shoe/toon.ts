@@ -608,6 +608,9 @@ export type SideOpts = {
   phase?: number; expr?: Expr; mode?: "march" | "stand" | "swing" | "push"; blink?: boolean | number; stomp?: number; pose?: number;
   /** step length as a multiple of 0.8 m (370 units): matches 1.6 m/s at 2 steps/s; scale by the view's foreshortening */
   stride?: number; light?: number; seed?: number;
+  /** FIX2: raised throwing arm (0..1) — near arm points up-forward instead of hanging (the shoe throw).
+   *  In profile the arm reads toward the target the card faces, so the throw has a visible wind-up. */
+  raise?: number;
   /** push mode: where the hands land at pose 1, in final canvas units (e.g. the swing kid's back) */
   hand?: [number, number];
 };
@@ -625,7 +628,7 @@ const SWING_HIP = 733;
 /** side view facing screen-right; march footfalls land at phase 0 (near foot) and 0.5 (far foot), like the front view.
  *  The stance foot is planted: it slides back at exactly the walking speed while the hip rises and falls over it. */
 export const bodySide = (p: Pen, o: Outfit, opts: SideOpts) => {
-  const { phase = 0, expr = "neutral", mode = "march", blink = false, stomp = 1, pose = 0, stride = 1, light = DEF_LIGHT, seed = 1 } = opts;
+  const { phase = 0, expr = "neutral", mode = "march", blink = false, stomp = 1, pose = 0, stride = 1, light = DEF_LIGHT, seed = 1, raise = 0 } = opts;
   const Bd = BUILD[o.build ?? "adult"], skin = o.skin ?? SKIN, two = Math.PI * 2, lid = lidOf(blink);
   const H: Blob = { ...headBlob(seed, Bd.a, 1), asym: 0.12, rot: rad(3 + 3 * (rnd(seed, 7) - 0.5)) };
   const W = 2 * H.a, HH = 2 * H.b, u = W / 100, sole = 975, ankY = sole - 4 * u;
@@ -664,6 +667,8 @@ export const bodySide = (p: Pen, o: Outfit, opts: SideOpts) => {
   } else {
     legs.push({ ank: [300 - 4 * u, ankY], pitch: 0, near: false }, { ank: [300 + 4 * u, ankY], pitch: 0, near: true });
   }
+  // FIX2: lean into the throw (profile: forward = +x on the card, i.e. toward the target it faces)
+  if (raise) lean = 6 * raise;
   const torsoBot = hipY + 0.12 * HH, chin = torsoBot - Bd.torso * HH, hc = chin - H.b, crown = hc - H.b, hip: P2 = [300, hipY];
   p.rot = null;
   for (const L of legs) {
@@ -701,6 +706,9 @@ export const bodySide = (p: Pen, o: Outfit, opts: SideOpts) => {
     near = [S, [(S[0] + hN[0]) / 2, (S[1] + hN[1]) / 2 + 0.06 * HH], hN];
     far = [S, [(S[0] + hN[0]) / 2 - 4 * u, (S[1] + hN[1]) / 2 - 0.02 * HH], [hN[0] - 6 * u, hN[1] - 0.08 * HH]];
   } else if (rifle) { near = [S, [S[0] - 4 * u, S[1] + 0.42 * HH], B0]; far = mode === "march" ? swingArm(rad(30) * nearFwd) : swingArm(0); }
+  else if (raise) { // FIX2: throwing arm — up and forward toward the target (hand above shoulder height)
+    near = [S, [S[0] + 0.3 * HH, S[1] - 0.4 * HH], [S[0] + 0.55 * HH, S[1] - 0.72 * HH]]; far = null;
+  }
   else { near = swingArm(rad(-30) * nearFwd); far = mode === "march" ? swingArm(rad(30) * nearFwd) : null; }
   if (far) { p.stroke(curve(far[0], far[1], far[2]), 5.2 * u, farArm); p.dot(far[2][0], far[2][1], 5.5 * u); }
   p.gradFill(tp, o.jacket, mul(o.jacket, SH_CLOTH), light);

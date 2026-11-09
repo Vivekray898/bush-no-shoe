@@ -156,7 +156,8 @@ export class World {
     this.iqFlag.rotation.y = 0;
     // ---- cast + effects ----
     const right = V(0, 0, 0).setFromMatrixColumn(cam.matrixWorld, 0);
-    const st = stage(id, t, { pos: cam.position, right });
+    // FIX2 (defect 4): the cast needs the real fov + look target for the screen-edge cull.
+    const st = stage(id, t, { pos: cam.position, right, fov: c.fov, look: V(...c.look) });
     this.frustum.setFromProjectionMatrix(this.m4.multiplyMatrices(cam.projectionMatrix, cam.matrixWorldInverse));
     const tint = "#ffffff";
     let ai = 0;

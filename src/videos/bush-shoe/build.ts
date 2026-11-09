@@ -281,6 +281,7 @@ export const FLAG_POLES: [number, number][] = [[-1.7, -5.3], [1.7, -5.3]]; // [x
  *  (world.ts waves them); this returns nothing — the poles are at FLAG_POLES. */
 export const buildRoom = (root: THREE.Object3D) => {
   const b = new Batch();
+  const nb = new Batch(); // FIX2: no-cast batch (flag poles — see below)
   const floorM = lam("floorWood", () => ({ color: "#b98a5a" }));
   const carpetM = lam("carpet", () => ({ color: "#7e2a24" }));
   const wallM = lam("wallCream", () => ({ color: "#e8d9b8" }));
@@ -312,6 +313,15 @@ export const buildRoom = (root: THREE.Object3D) => {
   // curtain backdrop behind the podium + flags (x -3.5 .. 3.5, up to 3.4 m), with a top valance
   b.add(boxGeo(V(-3.5, 0, -5.96), V(3.5, 3.4, -5.88)), curtainM);
   b.add(boxGeo(V(-3.6, 3.2, -5.96), V(3.6, 3.55, -5.86)), lam("curtainDark", () => ({ color: "#6b211d" })));
+  // FIX2 (defect 6): the wide shot's mid-wall was a flat red expanse — the curtain is y 0-3.4, the full width
+  // of the frame, with nothing on it between the medallion and the flags. Four framed panels (gold frame,
+  // darker-red inner, y 0.7-2.7) + five gold vertical fold strips (y 0-3.4) break it up at every height.
+  // The panels sit slightly proud of the curtain face; the flags (z -5.3) still hang in front of them.
+  for (const cx of [-2.6, -0.9, 0.9, 2.6]) {
+    b.add(boxGeo(V(cx - 0.75, 0.7, -5.89), V(cx + 0.75, 2.7, -5.86)), goldTrimM);
+    b.add(boxGeo(V(cx - 0.65, 0.8, -5.88), V(cx + 0.65, 2.6, -5.84)), lam("curtainPanel", () => ({ color: "#5e1d19" })));
+  }
+  for (const x of [-3.25, -1.75, 0, 1.75, 3.25]) b.add(boxGeo(V(x - 0.025, 0, -5.89), V(x + 0.025, 3.4, -5.86)), goldTrimM);
   // wall panels flanking the curtain (thin proud boxes, so the back wall is not one flat slab)
   for (const x of [-5.6, 5.6]) b.add(boxGeo(V(x - 1.1, 1.4, -5.97), V(x + 1.1, 4.6, -5.9)), lam("panel", () => ({ color: "#dfcda4" })));
   // FIX1 — fill the empty cream band at the top of the wide shots (the top ~1/3 of wides was blank wall).
@@ -396,31 +406,47 @@ export const buildRoom = (root: THREE.Object3D) => {
   // two microphones on the podium top: thin stems + small head boxes, angled toward Bush.
   // Wider apart (±0.45) and shorter than the first passes: at ±0.25 / ±0.38 their heads sat at Bush's ear level
   // and read as black earmuffs flanking his face in the close-ups. Now they sit below chin level.
+  // FIX2 (defect 3): thicker stems (±0.03), bigger head boxes, bigger base discs (±0.10) and moved forward
+  // (z -4.05, nearer the slab's front edge) — in screenshot 2 the thin stems on tiny bases read as floating.
   for (const [x, tilt] of [[-0.45, 0.18], [0.45, -0.18]] as const) {
-    const m = new THREE.Matrix4().makeRotationZ(tilt).setPosition(x, 1.08, -4.15);
-    b.add(boxGeo(V(-0.02, 0, -0.02), V(0.02, 0.26, 0.02)), micM, m);
-    const hm = new THREE.Matrix4().makeRotationZ(tilt).setPosition(x + tilt * 0.26, 1.08 + 0.26, -4.15);
-    b.add(boxGeo(V(-0.035, 0, -0.035), V(0.035, 0.06, 0.035)), micM, hm);
+    const m = new THREE.Matrix4().makeRotationZ(tilt).setPosition(x, 1.08, -4.05);
+    b.add(boxGeo(V(-0.03, 0, -0.03), V(0.03, 0.22, 0.03)), micM, m);
+    const hm = new THREE.Matrix4().makeRotationZ(tilt).setPosition(x + tilt * 0.22, 1.08 + 0.22, -4.05);
+    b.add(boxGeo(V(-0.05, 0, -0.05), V(0.05, 0.07, 0.05)), micM, hm);
     // FIX1: small round mic base discs, so the stems no longer float on the podium top.
-    b.add(boxGeo(V(x - 0.07, 1.08, -4.22), V(x + 0.07, 1.1, -4.08)), micM);
+    b.add(boxGeo(V(x - 0.1, 1.08, -4.12), V(x + 0.1, 1.1, -3.98)), micM);
   }
   // flag poles: gold, 2.7 m, with a finial ball; cloths are added by world.ts
+  // FIX2 (defect 3): the poles go in a separate NO-CAST batch. The sun sits behind the cameras, so a
+  // casting pole throws a thin vertical violet shadow onto the curtain right beside its flag — the purple
+  // stripe down the right side of screenshot 2. The cloths already do not cast (fix round 1); now the
+  // poles do not either. Gold poles still receive light; they just stop drawing the stripe.
   for (const [x, z] of FLAG_POLES) {
-    b.add(boxGeo(V(x - 0.03, 0, z - 0.03), V(x + 0.03, 2.7, z + 0.03)), goldM);
+    nb.add(boxGeo(V(x - 0.03, 0, z - 0.03), V(x + 0.03, 2.7, z + 0.03)), goldM);
     const ball = new THREE.SphereGeometry(0.07, 10, 8);
-    b.add(ball, goldM, new THREE.Matrix4().makeTranslation(x, 2.76, z));
+    nb.add(ball, goldM, new THREE.Matrix4().makeTranslation(x, 2.76, z));
   }
   // chairs: 4 rows x 7, seat + back + 4 legs each (seat top 0.45 m)
   // FIX1: seat cushion (lighter red) + dark top rail on each chair back, so the rows read as
   // furniture with parts instead of flat red slabs in the front-row shots.
+  // FIX2 (defect 2): chair back 0.95 -> 0.68 m, top rail 0.9-0.96 -> 0.63-0.69 m. The old back was
+  // TALLER than a sitter (crown ~0.88 m at scale 0.8), so in the wide shot only heads poked above tall
+  // red boxes and bodies/laps were swallowed. Now the sitter (crown ~0.94 m at scale 0.85) sits visibly
+  // ABOVE the back, torso and arms in the open, and the chair reads as UNDER them.
   const cushionM = lam("chairCushion", () => ({ color: "#8a3d34" }));
+  // FIX2 round 2 (defect 5): the chairs go in the NO-CAST batch with the poles. Decisive evidence is the
+  // final wide (r1_2033): big purple patches sit under chairs where NO figure is drawn at all, so the
+  // stains are the chairs' own cast shadows on the red carpet — long, soft, violet from the hemi light —
+  // not the figures' blobs. Indoors, on a red carpet, they read as stains. The chairs still receive light
+  // and shadow; they just stop drawing their own. (Their legs touch the floor, so they stay grounded.)
   for (const z of ROWS_Z) for (const x of COLS_X) {
-    b.add(boxGeo(V(x - 0.24, 0.42, z - 0.2), V(x + 0.24, 0.47, z + 0.2)), chairM); // seat
-    b.add(boxGeo(V(x - 0.22, 0.47, z - 0.18), V(x + 0.22, 0.5, z + 0.18)), cushionM); // cushion
-    b.add(boxGeo(V(x - 0.24, 0.47, z - 0.24), V(x + 0.24, 0.95, z - 0.18)), chairM); // back
-    b.add(boxGeo(V(x - 0.26, 0.9, z - 0.26), V(x + 0.26, 0.96, z - 0.16)), chairLegM); // top rail
+    nb.add(boxGeo(V(x - 0.24, 0.42, z - 0.2), V(x + 0.24, 0.47, z + 0.2)), chairM); // seat
+    nb.add(boxGeo(V(x - 0.22, 0.47, z - 0.18), V(x + 0.22, 0.5, z + 0.18)), cushionM); // cushion
+    nb.add(boxGeo(V(x - 0.24, 0.47, z - 0.24), V(x + 0.24, 0.68, z - 0.18)), chairM); // back
+    nb.add(boxGeo(V(x - 0.26, 0.63, z - 0.26), V(x + 0.26, 0.69, z - 0.16)), chairLegM); // top rail
     for (const [dx, dz] of [[-0.2, -0.16], [0.2, -0.16], [-0.2, 0.16], [0.2, 0.16]] as const)
-      b.add(boxGeo(V(x + dx - 0.025, 0, z + dz - 0.025), V(x + dx + 0.025, 0.42, z + dz + 0.025)), chairLegM);
+      nb.add(boxGeo(V(x + dx - 0.025, 0, z + dz - 0.025), V(x + dx + 0.025, 0.42, z + dz + 0.025)), chairLegM);
   }
   b.build(root);
+  nb.build(root, false); // FIX2: poles cast no shadow (defect 3)
 };

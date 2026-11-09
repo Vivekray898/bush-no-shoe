@@ -5,7 +5,7 @@
 // Cards, effects and blobs live on the NOINK layer so the world ink pass never outlines their quads.
 import * as THREE from "three";
 import {
-  Pen, bodyFront, bodySide, fxBurst, fxBlob, fxShadow, fxContact, SKINS,
+  Pen, bodyFront, bodySide, fxBurst, fxBlob, fxContact, SKINS,
   Outfit, Expr, FrontOpts, SideOpts,
 } from "./toon";
 import {
@@ -114,7 +114,7 @@ export type Place = {
 };
 export type FxPlace = { key: string; cw: number; ch: number; draw: (p: Pen) => void; x: number; y: number; z: number; w: number; h: number; flat?: boolean; rot?: number; soft?: boolean };
 /** sun = world direction TOWARD the sun (optional: when absent the scene's shadow-casting light is used) */
-export type CamInfo = { pos: THREE.Vector3; right: THREE.Vector3; sun?: THREE.Vector3 };
+export type CamInfo = { pos: THREE.Vector3; right: THREE.Vector3; sun?: THREE.Vector3; fov: number; look: THREE.Vector3 };
 
 const hh = (i: number, s = 0) => { const v = Math.sin(i * 127.1 + s * 311.7) * 43758.5453; return v - Math.floor(v); };
 const q = (v: number, n = 120) => Math.round(v * n) / n;
@@ -159,6 +159,41 @@ const viewOf = (cam: CamInfo, x: number, z: number, dx: number, dz: number) => {
   return { side: c < 0.57, mirror: dx * cam.right.x + dz * cam.right.z < 0, fs: Math.round(Math.sqrt(Math.max(0, 1 - c * c)) * 20) / 20 };
 };
 
+// FIX2 (defect 4): screen-space edge cull — the skill's trap ("props closer than ~2 m to a lens become
+// huge cut-off blobs at the frame edge; a foreground prop must be recognisable or gone") is NOT fixed by
+// the distance cull alone: a member 3+ m away can still be half-cut at an edge, and DOF blur turns it into
+// an unrecognisable blob. So a card whose projected extent crosses into the outer ~15% of the frame is
+// removed entirely (the empty chair stays — an empty seat reads better than a half-head).
+// (x, y, z) = card centre; halfW/halfH = card half-size in metres.
+const _ecF = new THREE.Vector3(), _ecP = new THREE.Vector3();
+const edgeCull = (cam: CamInfo, x: number, y: number, z: number, halfW: number, halfH: number) => {
+  // FIX2 round 2: forward comes from the look target, NOT up x right — the first version ignored the
+  // camera's downward pitch, so its vertical NDC was off by ~tan(pitch)/tan(fov/2) and the bottom test
+  // wrongly removed whole rows in the dollying wides (r1_70 / r1_2033 came out nearly empty).
+  const fwd = _ecF.subVectors(cam.look, cam.pos).normalize();
+  const up = _ecP.crossVectors(cam.right, fwd).normalize();
+  const vx = x - cam.pos.x, vy = y - cam.pos.y, vz = z - cam.pos.z;
+  const depth = vx * fwd.x + vy * fwd.y + vz * fwd.z;
+  if (depth < 0.3) return true; // behind / on top of the lens
+  const tanH = Math.tan((cam.fov * Math.PI / 180) / 2), asp = 1080 / 1920;
+  const nx = (vx * cam.right.x + vy * cam.right.y + vz * cam.right.z) / depth / (tanH * asp);
+  const ny = (vx * up.x + vy * up.y + vz * up.z) / depth / tanH;
+  const hw = halfW / depth / (tanH * asp), hh = halfH / depth / tanH;
+  // FIX2 calibration: the trap is about NEAR, unrecognisable blobs — a member closer than ~6 m whose card
+  // crosses the outer ~18% is removed. Farther members are small and recognisable even at the edge, so they
+  // are only removed if the card actually crosses the frame edge (margin 1.0); that keeps the wide-shot
+  // crowd instead of emptying the outer columns.
+  // Bottom edge (round 2): test the CENTRE (ny < -0.9), not the card's lower edge — a foreground row whose
+  // feet are below the frame but whose head is in it is a normal wide shot, not a half-cut blob. (The top
+  // edge still tests the head: ny + hh > 0.9, because a head cut at the top IS the defect.)
+  // Margin 0.65 (round 2b): the podium MS foreground head (r2_150) measured 0.67, not 0.84 as first
+  // estimated (the fov widened to 48 in round 2, which shrinks the projected card). 0.65 removes him and
+  // the flag-hit foreground member (0.71, r2_1079) without touching the wides (their near members measure
+  // <= 0.52; the rest use the far margin) or the shot-7 seated member (0.52, far margin).
+  const margin = depth < 6 ? 0.65 : 1.0;
+  return Math.abs(nx) + hw > margin || ny + hh > 0.9 || ny < -0.9;
+};
+
 // ---------------- life: blinks and reaction timing ----------------
 /** reference expression and action changes land 0-3 f before the word onset */
 const LEAD = 2 / FPS;
@@ -194,24 +229,22 @@ const person = (cam: CamInfo, who: Who, x: number, y: number, z: number, view: {
 };
 
 /** ground shadow under a standing / sitting card (review rounds 2-4), multiply, blue-violet: a TIGHT contact pool right under
- *  the feet (~.5 on screen at the core) so nobody floats, plus by day (cards cast no real shadow) a lighter soft tail
- *  stretched AWAY from the sun, length ~1.6 m / tan(sun elevation), capped. */
-const CONTACT: Record<"day" | "golden", [number, number, number]> = { day: [0.2, 0.21, 0.33], golden: [0.24, 0.2, 0.33] };
-const TAIL: [number, number, number] = [0.42, 0.44, 0.62];
+ *  the feet (~.5 on screen at the core) so nobody floats.
+ *  FIX2 (defect 5): there used to be a soft tail stretched away from the sun as well. Round 1 shortened and
+ *  lightened it, but the r1 stills proved it was not enough: in the final wide (r1_2033) big purple patches
+ *  sit under chairs where NO figure is drawn at all, so the stains are not (only) the tails — but the tails
+ *  are the same violet, the same direction, and they land on the same red carpet, so they go too. Indoors,
+ *  on a red carpet, a long violet floor shadow reads as a stain, not as light. The tight pool alone is what
+ *  stops a figure floating (per the characters report); the room's real shadows come from the light rig. */
+const CONTACT: Record<"day" | "golden", [number, number, number]> = { day: [0.3, 0.31, 0.42], golden: [0.32, 0.3, 0.42] };
 const toSrgb = (v: number) => { const c = clamp01(v); return c <= 0.0031308 ? 12.92 * c : 1.055 * c ** (1 / 2.4) - 0.055; };
 const hexOf = (c: [number, number, number], k: number) => "#" + c.map((v) => Math.round(255 * toSrgb(1 - (1 - v) * k)).toString(16).padStart(2, "0")).join("");
 const blob = (out: Stage, x: number, y: number, z: number, sc = 1, k = 1) => {
   const hl = Math.hypot(SUN.x, SUN.z) || 1, ox = -SUN.x / hl, oz = -SUN.z / hl, rot = Math.atan2(-ox, -oz);
-  if (LNAME === "day") {
-    const el = Math.asin(Math.min(0.99, Math.max(0.1, SUN.y)));
-    const len = Math.min(2.4, Math.max(0.5, 1.6 / Math.tan(el))) * sc, h = len + 0.55 * sc, c = 0.3 * h;
-    const tc = hexOf(TAIL, k);
-    out.fx.push({ key: `blob|shadow|${tc}`, cw: 128, ch: 256, draw: (p) => fxShadow(p, tc), x: x + ox * c, y: y + 0.018, z: z + oz * c,
-      w: 0.72 * sc, h, flat: true, rot });
-  }
+  // FIX2 round 2: contact pool ONLY — no tail (see the CONTACT note above).
   const cc = hexOf(CONTACT[LNAME], k);
   out.fx.push({ key: `blob|contact|${cc}`, cw: 128, ch: 128, draw: (p) => fxContact(p, cc), x: x + ox * 0.03 * sc, y: y + 0.022, z: z + oz * 0.03 * sc,
-    w: 0.52 * sc, h: 0.4 * sc, flat: true, rot });
+    w: 0.5 * sc, h: 0.34 * sc, flat: true, rot });
 };
 
 // ---------------- outfits (our own cartoon versions of the real people; bean-head style) ----------------
@@ -249,18 +282,22 @@ const bush = (cam: CamInfo, f: number, t: number, id: number, out: Stage) => {
   const ducking = dip > 0.02;
   const expr: Expr = ducking ? "shock" : id === 5 || id >= 8 ? "grin" : id === 4 && f > 994 ? "relief" : "neutral";
   const fo: FrontOpts = { mode: "stand", expr, blink: lidAt(t, 1), tilt: (dip / 0.35) * 0.12 };
+  // FIX2 (defect 3): scale 0.88 -> 1.0. At 0.88 the figure is 1.48 m, chin ~1.05 m — just BELOW the 1.08 m
+  // podium top, so only his head peeked over it (screenshot 2). At 1.0 he is 1.68 m, chin ~1.20 m, so head
+  // AND shoulders read over the podium.
   out.places.push(person(cam, { i: 1, o: BUSH, okey: "bush" }, BUSH_AT[0], BUSH_AT[1] - dip, BUSH_AT[2],
-    { side: false, mirror: false }, fo, {}, 0.88));
-  blob(out, BUSH_AT[0], 0, BUSH_AT[2], 0.88);
+    { side: false, mirror: false }, fo, {}, 1.0));
+  blob(out, BUSH_AT[0], 0, BUSH_AT[2], 1.0);
 };
 
 /** al-Maliki at Bush's side: steady, stern; glances at Bush on the ducks. */
 const maliki = (cam: CamInfo, t: number, f: number, out: Stage) => {
   const ducking = duckDip(f, DUCK1_F) > 0.02 || duckDip(f, DUCK2_F) > 0.02;
   const fo: FrontOpts = { mode: "stand", expr: ducking ? "shock" : "stern", look: ducking ? -1 : 0, blink: lidAt(t, 2) };
+  // FIX2 (defect 3): scale 0.88 -> 1.0, same as Bush — head + shoulders over the podium, not just a head.
   out.places.push(person(cam, { i: 2, o: MALIKI, okey: "maliki" }, MALIKI_AT[0], MALIKI_AT[1], MALIKI_AT[2],
-    { side: false, mirror: false }, fo, {}, 0.88));
-  blob(out, MALIKI_AT[0], 0, MALIKI_AT[2], 0.88);
+    { side: false, mirror: false }, fo, {}, 1.0));
+  blob(out, MALIKI_AT[0], 0, MALIKI_AT[2], 1.0);
 };
 
 /** al-Zaidi, front row: sits until f599, stands up over ~12 f, shouts, throws both shoes, then is led out. */
@@ -275,14 +312,23 @@ const zaidi = (cam: CamInfo, f: number, t: number, id: number, out: Stage) => {
     const phase = q(((f - 1651) / 30) % 1, 120);
     out.places.push(person(cam, { i: 3, o: ZAIDI, okey: "zaidi" }, x, zy, z,
       viewOf(cam, x, z, 0.4, 1), { mode: "stroll", phase, expr: "nervous", blink: lidAt(t, 3) },
-      { mode: "march", phase, expr: "nervous", stride: 0.8 }));
-    blob(out, x, 0, z, 0.8);
+      { mode: "march", phase, expr: "nervous", stride: 0.8 }, 0.9));
+    blob(out, x, 0, z, 0.9);
     return;
   }
   if (f < 599) {
+    // FIX2 (defect 1): seated 3/4 toward the podium, not flat front-on — facing/look from the SCREEN
+    // direction of Bush, so he turns toward his target from every camera, not just head-on ones.
+    // FIX2 round 2b (defect 4): the seated branch had NO edge cull, so in the podium MS (r2_150) his
+    // card centre sat just outside the frame and a huge DOF-blurred half-head filled the bottom-right
+    // corner. Seated, he is not the subject of any shot — cull him like the press. (Standing, he IS the
+    // subject of shots 3/4/6/7 and is never culled.)
+    if (edgeCull(cam, zx, 0.92, zz, 0.55, 0.92)) return;
+    const bx = (BUSH_AT[0] - zx) * cam.right.x + (BUSH_AT[2] - zz) * cam.right.z;
+    const facing = bx < -0.05 ? -1 : bx > 0.05 ? 1 : 0;
     out.places.push(person(cam, { i: 3, o: ZAIDI, okey: "zaidi" }, zx, zy, zz,
-      { side: false, mirror: false }, { mode: "sit", expr: "neutral", blink: lidAt(t, 3) }, {}, 0.8));
-    blob(out, zx, 0, zz, 0.8);
+      { side: false, mirror: false }, { mode: "sit", expr: "neutral", blink: lidAt(t, 3), facing, look: facing }, {}, 0.85));
+    blob(out, zx, 0, zz, 0.85, 1);
     return;
   }
   const u = zaidiStandU(f);
@@ -292,13 +338,17 @@ const zaidi = (cam: CamInfo, f: number, t: number, id: number, out: Stage) => {
   const shouting = f >= 677 && f < 728;
   const throwing = (f >= 744 && f < 761) || (f >= 828 && f < 845);
   const expr: Expr = shouting ? "shock" : throwing ? "grin" : f >= 1109 ? "nervous" : "neutral";
-  const fo: FrontOpts = {
-    mode: "stand", expr, blink: lidAt(t, 3),
-    wave: throwing ? 1 : undefined, // right arm up on the throws
-  };
+  // FIX2 (defect 1): he throws AT Bush, so he is drawn in SIDE view facing the podium (-z), never front-on
+  // to the camera — bodySide + a mirror computed from where Bush actually sits ON SCREEN (viewOf's mirror
+  // uses the walk direction and gets shot 4 wrong: from dead behind, Bush is screen-left of him but viewOf
+  // faces him screen-right). The throw is a raised arm (toon.ts SideOpts.raise) toward Bush, not the
+  // front-view wave. Scale 0.8 -> 0.9: at 0.8 he was 1.34 m standing next to 1.68 m Bush.
+  const bx = (BUSH_AT[0] - zx2) * cam.right.x + (BUSH_AT[2] - zz2) * cam.right.z;
+  const fo: FrontOpts = { mode: "stand", expr, blink: lidAt(t, 3) };
+  const so: SideOpts = { mode: "stand", expr, blink: lidAt(t, 3), raise: throwing ? 1 : 0 };
   out.places.push(person(cam, { i: 3, o: ZAIDI, okey: "zaidi" }, zx2, zy - 0.25 * (1 - u), zz2,
-    { side: false, mirror: false }, fo, {}, 0.8));
-  blob(out, zx2, 0, zz2, 0.8);
+    { side: true, mirror: bx < 0 }, fo, so, 0.9));
+  blob(out, zx2, 0, zz2, 0.9);
 };
 
 /** the seated press: rows of journalists facing the podium. Heads turn toward al-Zaidi once he stands;
@@ -307,25 +357,31 @@ const press = (cam: CamInfo, f: number, t: number, out: Stage) => {
   let i = 10;
   for (const z of ROWS_Z) for (const x of COLS_X) {
     if (z === ROWS_Z[0] && x === ZAIDI_AT[0]) { i++; continue; } // al-Zaidi's chair: drawn separately
-    // FIX2: the nearest row (z = 5.0, closest to the wide cameras) leaves only its centre three members
-    // (|x| < 2.0); their chairs stay, empty, instead of half a head at the frame edge.
-    // Honest note: a fresh re-render of f600 with this rule in place was byte-identical to the r1 still,
-    // so the outer nearest-row members were already out of frame / near-culled in these shots — the
-    // blurred heads that remain at the bottom corners are foreground depth framing (near members at
-    // z 3.4, recognised heads, heavily DOF-blurred), not half-cut standing figures. Kept as a guard.
+    // FIX2 (defect 4): the nearest row (z = 5.0, closest to the wide cameras) leaves only its centre three
+    // members (|x| < 2.0); their chairs stay, empty, instead of half a head at the frame edge.
     if (z === ROWS_Z[ROWS_Z.length - 1] && Math.abs(x) >= 2.0) { i++; continue; }
-    // FIX1: a press member closer than ~2.8 m to the lens becomes a huge cut-off blob / half a person
-    // at the frame edge (r1 shot-3, and the half-cut foreground heads in the user's rendered video):
-    // leave that seat empty for this frame instead of drawing half a person. Was 2.3 m.
-    if (cam.pos.distanceTo(tmp.set(x, 1.2, z)) < 2.8) { i++; continue; }
+    // FIX2 (defect 4): distance cull 2.8 -> 3.2 m, AND the screen-edge cull — a member 3+ m away can still
+    // be half-cut at an edge, and DOF blur turns it into an unrecognisable blob (screenshot 3: the huge
+    // blurred head at the left edge). The r1 note claiming those were "foreground depth framing" was
+    // wrong — the user showed they read as a mess, so they are removed, not rationalised.
+    if (cam.pos.distanceTo(tmp.set(x, 1.2, z)) < 3.2) { i++; continue; }
+    if (edgeCull(cam, x, 0.92, z, 0.55, 0.92)) { i++; continue; } // card centre ~0.92 m, half-size 0.55 x 0.92 m
     const o = pressOutfit(i);
     const frontRow = z === ROWS_Z[0];
-    const look = f >= 597 ? (x < ZAIDI_AT[0] ? 1 : x > ZAIDI_AT[0] ? -1 : 0) : 0;
+    // FIX2 (defect 1): 3/4 toward the action, not flat front-on — facing/look from the SCREEN direction of
+    // the target (the podium, or al-Zaidi once he stands), so a member turns toward the action from every
+    // camera, including the side cameras of shots 3/6/7. (The old look used world-x only, which is wrong
+    // from any camera that is not dead behind the rows.)
+    const tx = f >= 597 ? ZAIDI_AT[0] : 0, tz = f >= 597 ? 0.75 : -4.9;
+    const sx = (tx - x) * cam.right.x + (tz - z) * cam.right.z;
+    const facing = sx < -0.05 ? -1 : sx > 0.05 ? 1 : 0;
     const gasp = (f >= 747 && f < 816) || (f >= 831 && f < 890);
     const expr: Expr = gasp ? (frontRow ? "shock" : "nervous") : f >= 1708 && i % 5 === 0 ? "grin" : "neutral";
+    // FIX2 (defect 2): scale 0.8 -> 0.85 — a sitter's crown is now ~0.94 m, above the lowered 0.68 m chair
+    // back (was 0.88 m against a 0.95 m back: the chair was taller than the sitter, so only a head showed).
     out.places.push(person(cam, { i, o, okey: `press${i % 8}` }, x, 0, z,
-      { side: false, mirror: false }, { mode: "sit", expr, look, blink: lidAt(t, i) }, {}, 0.8));
-    blob(out, x, 0, z, 0.8, 0.8);
+      { side: false, mirror: false }, { mode: "sit", expr, look: facing, facing, blink: lidAt(t, i) }, {}, 0.85));
+    blob(out, x, 0, z, 0.85, 0.8);
     i++;
   }
 };
@@ -353,11 +409,14 @@ const guards = (cam: CamInfo, f: number, t: number, id: number, out: Stage) => {
       z = flank[2] + (5.6 - flank[2]) * u;
       mode = "stroll"; phase = q(((f - 1651) / 30) % 1, 120);
     }
+    // FIX2 (defect 4): a guard half-cut at a frame edge is removed too (they were half-cut at the edges
+    // in the first render). Card centre ~1.1 m, half-size 0.65 x 1.08 m at scale 1.0.
+    if (edgeCull(cam, x, 1.1, z, 0.65, 1.08)) return;
     const view = viewOf(cam, x, z, 0.4, 1);
     out.places.push(person(cam, { i, o: GUARD, okey: "guard" }, x, 0, z, view,
       { mode, phase, expr: "stern", blink: lidAt(t, i) },
       { mode: mode === "stroll" ? "march" : "stand", phase, expr: "stern", stride: 0.8 }));
-    blob(out, x, 0, z, 0.85);
+    blob(out, x, 0, z, 1.0);
   });
 };
 

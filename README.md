@@ -15,10 +15,10 @@ video. Based on the `claude-animated-shorts` skill (bridge template).
   30 fps, 2034 frames (67.802 s).
 - `voice/words.json` — word timings for the narration.
 - `audio/mix.wav` — finished 67.802 s mix (ElevenLabs Brian voice +
-  march music + SFX), 48 kHz stereo. **Download this file separately
-  if it is missing from the repo — GitHub's file API used for this
-  upload cannot carry binary audio, so it may be supplied as a separate
-  download.**
+  march music + SFX), 48 kHz stereo. **Not in this zip — reuse the copy
+  from the previous zip (unchanged in fix round 2); see "Fix round 2"
+  below. GitHub's file API cannot carry binary audio, so it is not in
+  the repo either.**
 - `SCRIPT.md` — approved script + verified facts.
 - `NOTES.md`, `ADAPTATION.md`, `SHOT_PLAN.md`, `AUDIO_EVENTS.md`,
   `audio/MIX_NOTES.md`, `audio/cues.md` — build notes.
@@ -67,6 +67,51 @@ again. Full old → new table in `RETIME.md`. The old Kokoro mix and
 voice are kept as fallback in the main project folder (`audio/` and
 `voice/`) but are NOT in this export — this export is the ElevenLabs
 version only.
+
+## Fix round 2 — 9 Nov 2026
+
+You reviewed the new render and said the frames are a mess and not close to
+the skill's examples. All six defects are fixed in this export; timing is
+unchanged (TOTAL = 2034 frames, same voice, same mix). Full detail in
+`FIXES2.md`.
+
+1. **al-Zaidi faced the audience** — he is now in side view facing the podium
+   while standing/shouting/throwing, with a raised throwing arm toward Bush
+   (new `SideOpts.raise`); seated he is 3/4 toward the podium, and the press
+   are 3/4 toward the podium / toward him when he stands.
+2. **Press half-sunken in chairs** — chair backs lowered 0.95 → 0.68 m and
+   sitters raised to scale 0.85, so torsos, arms and laps are visible and the
+   chair is visibly UNDER them.
+3. **Podium closeup** — pulled back and widened (fov 48, was 30), so both
+   flags + poles are fully in frame; the purple vertical stripe is gone (flag
+   poles no longer cast shadows); Bush is 1.68 m so head AND shoulders read
+   over the podium; Maliki moved to x 1.35 so he is fully in frame; mics
+   thickened with bigger bases.
+4. **Huge blurred head at the frame edge** — new screen-space `edgeCull()`
+   removes any figure whose card crosses into the outer ~15% of the frame
+   (near members) or crosses the frame edge (far members). The blurred
+   foreground heads in the podium MS and the flag-hit frame are gone; the
+   wides keep their crowd.
+5. **Purple blotches on the floor** — the stains were the CHAIRS' own cast
+   shadows (proved: patches under chairs with no figure drawn) plus long blob
+   tails. Chairs moved to the no-cast batch; blob tails removed entirely
+   (tight contact pool only). The carpet reads as carpet now.
+6. **Flat red mid-wall** — four gold-framed panels + five gold fold strips on
+   the curtain, so the wide shot has something to look at at every height.
+
+Verified with four look-check rounds of stills (r1/r2/r3/r4 in
+`remotion/stills-fix2/` on the build machine — stills are not in this
+export) and `npx tsc --noEmit` (clean). Known remaining imperfections
+(see `FIXES2.md`): the wide shots' outer press columns are empty chairs;
+shot 3 has no visible press faces; shot 6's replay shoe is big and dark
+and Maliki is half-cut at its right edge; the throwing arm can read as a
+dark blob in a single still.
+
+**Audio note:** this export does NOT contain `audio/mix.wav` or
+`voice/voice_48k.wav` — they are unchanged from the previous zip (ElevenLabs
+Brian, 67.802 s) and you already have them from that zip. Reuse those copies:
+put `mix.wav` in `audio/` and `voice_48k.wav` in `voice/` before rendering.
+`voice/words.json` is included here.
 
 ## Render on your machine
 
